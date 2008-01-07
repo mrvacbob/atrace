@@ -1,0 +1,292 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D24AD670C2DB8730052C0F8 /* trig.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D24AD650C2DB8730052C0F8 /* trig.h */; };
+		3D24AD680C2DB8730052C0F8 /* trig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D24AD660C2DB8730052C0F8 /* trig.cpp */; };
+		3D24AD6E0C2DB89D0052C0F8 /* atrace.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D24AD6D0C2DB89D0052C0F8 /* atrace.h */; };
+		3D24ADA60C2DBF080052C0F8 /* scene.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D24ADA40C2DBF080052C0F8 /* scene.h */; };
+		3D24ADA70C2DBF080052C0F8 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D24ADA50C2DBF080052C0F8 /* scene.cpp */; };
+		3D24ADFA0C2DC9A80052C0F8 /* raytrace.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D24ADF80C2DC9A80052C0F8 /* raytrace.h */; };
+		3D24ADFB0C2DC9A80052C0F8 /* raytrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D24ADF90C2DC9A80052C0F8 /* raytrace.cpp */; };
+		3D66CEED0C962CA400EA23DD /* images.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D66CEEC0C962CA400EA23DD /* images.cpp */; };
+		3D66CF270C962F1D00EA23DD /* png.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D66CF250C962F1D00EA23DD /* png.h */; };
+		3D66CF280C962F1D00EA23DD /* pngconf.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3D66CF260C962F1D00EA23DD /* pngconf.h */; };
+		3D66CF2A0C962F3700EA23DD /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D66CF290C962F3700EA23DD /* libpng.dylib */; };
+		3D66D53B0C971F4000EA23DD /* tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3069EF0C7410AF00E4580F /* tests.cpp */; };
+		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
+		8DD76F6A0486A84900D96B5E /* atrace.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* atrace.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* atrace.1 in CopyFiles */,
+				3D24AD670C2DB8730052C0F8 /* trig.h in CopyFiles */,
+				3D24AD6E0C2DB89D0052C0F8 /* atrace.h in CopyFiles */,
+				3D24ADA60C2DBF080052C0F8 /* scene.h in CopyFiles */,
+				3D24ADFA0C2DC9A80052C0F8 /* raytrace.h in CopyFiles */,
+				3D66CF270C962F1D00EA23DD /* png.h in CopyFiles */,
+				3D66CF280C962F1D00EA23DD /* pngconf.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3D24AD650C2DB8730052C0F8 /* trig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trig.h; sourceTree = "<group>"; };
+		3D24AD660C2DB8730052C0F8 /* trig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trig.cpp; sourceTree = "<group>"; };
+		3D24AD6D0C2DB89D0052C0F8 /* atrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = atrace.h; sourceTree = "<group>"; };
+		3D24ADA40C2DBF080052C0F8 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scene.h; sourceTree = "<group>"; };
+		3D24ADA50C2DBF080052C0F8 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
+		3D24ADF80C2DC9A80052C0F8 /* raytrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = raytrace.h; sourceTree = "<group>"; };
+		3D24ADF90C2DC9A80052C0F8 /* raytrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = raytrace.cpp; sourceTree = "<group>"; };
+		3D3069EE0C7410AF00E4580F /* tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tests.h; sourceTree = "<group>"; };
+		3D3069EF0C7410AF00E4580F /* tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tests.cpp; sourceTree = "<group>"; };
+		3D66CEEC0C962CA400EA23DD /* images.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = images.cpp; sourceTree = "<group>"; };
+		3D66CF250C962F1D00EA23DD /* png.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = png.h; path = /sw/include/libpng12/png.h; sourceTree = "<absolute>"; };
+		3D66CF260C962F1D00EA23DD /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = /sw/include/libpng12/pngconf.h; sourceTree = "<absolute>"; };
+		3D66CF290C962F3700EA23DD /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = /sw/lib/libpng.dylib; sourceTree = "<absolute>"; };
+		3D71B67E0CFA42B700719BD1 /* vector_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector_template.h; sourceTree = "<group>"; };
+		8DD76F6C0486A84900D96B5E /* atrace */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = atrace; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6859E8B029090EE04C91782 /* atrace.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = atrace.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D66CF2A0C962F3700EA23DD /* libpng.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* atrace */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				3D66CF210C962EF900EA23DD /* External */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = atrace;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7796FE84155DC02AAC07 /* main.cpp */,
+				3D24AD6D0C2DB89D0052C0F8 /* atrace.h */,
+				3D66CEEC0C962CA400EA23DD /* images.cpp */,
+				3D24ADF80C2DC9A80052C0F8 /* raytrace.h */,
+				3D24ADF90C2DC9A80052C0F8 /* raytrace.cpp */,
+				3D24ADA40C2DBF080052C0F8 /* scene.h */,
+				3D24ADA50C2DBF080052C0F8 /* scene.cpp */,
+				3D3069EE0C7410AF00E4580F /* tests.h */,
+				3D3069EF0C7410AF00E4580F /* tests.cpp */,
+				3D24AD650C2DB8730052C0F8 /* trig.h */,
+				3D24AD660C2DB8730052C0F8 /* trig.cpp */,
+				3D71B67E0CFA42B700719BD1 /* vector_template.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* atrace */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3D66CF210C962EF900EA23DD /* External */ = {
+			isa = PBXGroup;
+			children = (
+				3D66CF290C962F3700EA23DD /* libpng.dylib */,
+				3D66CF240C962F1D00EA23DD /* libpng12 */,
+			);
+			name = External;
+			sourceTree = "<group>";
+		};
+		3D66CF240C962F1D00EA23DD /* libpng12 */ = {
+			isa = PBXGroup;
+			children = (
+				3D66CF250C962F1D00EA23DD /* png.h */,
+				3D66CF260C962F1D00EA23DD /* pngconf.h */,
+			);
+			name = libpng12;
+			path = /sw/include/libpng12;
+			sourceTree = "<absolute>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* atrace.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* atrace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "atrace" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = atrace;
+			productInstallPath = "$(HOME)/bin";
+			productName = atrace;
+			productReference = 8DD76F6C0486A84900D96B5E /* atrace */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "atrace" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* atrace */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* atrace */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F650486A84900D96B5E /* main.cpp in Sources */,
+				3D24AD680C2DB8730052C0F8 /* trig.cpp in Sources */,
+				3D24ADA70C2DBF080052C0F8 /* scene.cpp in Sources */,
+				3D24ADFB0C2DC9A80052C0F8 /* raytrace.cpp in Sources */,
+				3D66CEED0C962CA400EA23DD /* images.cpp in Sources */,
+				3D66D53B0C971F4000EA23DD /* tests.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/sw/lib,
+				);
+				PRODUCT_NAME = atrace;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = i386;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/sw/lib,
+				);
+				PRODUCT_NAME = atrace;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				COPY_PHASE_STRIP = NO;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_STRICT_ALIASING = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = (
+					"-g",
+					"-fweb",
+				);
+				PREBINDING = NO;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "atrace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "atrace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

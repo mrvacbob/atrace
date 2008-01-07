@@ -1,0 +1,339 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 3D24AD550C2DB7DA0052C0F8 /* atrace */;
+		activeTarget = 8DD76F620486A84900D96B5E /* atrace */;
+		addToTargets = (
+		);
+		breakpoints = (
+		);
+		codeSenseManager = 3D24AD5C0C2DB7DB0052C0F8 /* Code sense */;
+		executables = (
+			3D24AD550C2DB7DA0052C0F8 /* atrace */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					200,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					256,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = 1;
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					368,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFindDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFindDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					382,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFindDataSource_MessageID,
+					PBXFindDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXSymbolsDataSource_SymbolNameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					16,
+					200,
+					50,
+					308,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXSymbolsDataSource_SymbolTypeIconID,
+					PBXSymbolsDataSource_SymbolNameID,
+					PBXSymbolsDataSource_SymbolTypeID,
+					PBXSymbolsDataSource_ReferenceNameID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					328,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 219961735;
+			PBXWorkspaceStateSaveDate = 219961735;
+		};
+		perUserProjectItems = {
+			3D280B540D0A4C1700BC2354 /* PBXTextBookmark */ = 3D280B540D0A4C1700BC2354 /* PBXTextBookmark */;
+			3D66CFF30C96391C00EA23DD /* PBXTextBookmark */ = 3D66CFF30C96391C00EA23DD /* PBXTextBookmark */;
+			3D66D6530C9722A300EA23DD /* PBXTextBookmark */ = 3D66D6530C9722A300EA23DD /* PBXTextBookmark */;
+			3DD9EB830D1C5FF100C73064 /* PBXTextBookmark */ = 3DD9EB830D1C5FF100C73064 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 3D24AD5B0C2DB7DB0052C0F8 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB7796FE84155DC02AAC07 /* main.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 1946}}";
+			sepNavSelRange = "{2812, 0}";
+			sepNavVisRange = "{1632, 1641}";
+			sepNavVisRect = "{{0, 791}, {1226, 728}}";
+			sepNavWindowFrame = "{{716, 21}, {1265, 857}}";
+		};
+	};
+	3D24AD550C2DB7DA0052C0F8 /* atrace */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = atrace;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	3D24AD5B0C2DB7DB0052C0F8 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	3D24AD5C0C2DB7DB0052C0F8 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	3D24AD650C2DB8730052C0F8 /* trig.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 2702}}";
+			sepNavSelRange = "{346, 0}";
+			sepNavVisRange = "{2819, 1015}";
+			sepNavVisRect = "{{0, 709}, {905, 501}}";
+			sepNavWindowFrame = "{{149, 21}, {1265, 857}}";
+		};
+	};
+	3D24AD660C2DB8730052C0F8 /* trig.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 729}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 490}";
+			sepNavVisRect = "{{0, 0}, {0, 0}}";
+			sepNavWindowFrame = "{{728, 21}, {1265, 857}}";
+		};
+	};
+	3D24AD6D0C2DB89D0052C0F8 /* atrace.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 729}}";
+			sepNavSelRange = "{242, 0}";
+			sepNavVisRange = "{0, 338}";
+			sepNavVisRect = "{{0, 0}, {0, 0}}";
+			sepNavWindowFrame = "{{550, 21}, {1265, 857}}";
+		};
+	};
+	3D24ADA40C2DBF080052C0F8 /* scene.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 2576}}";
+			sepNavSelRange = "{1471, 0}";
+			sepNavVisRange = "{159, 1346}";
+			sepNavVisRect = "{{0, 203}, {1226, 728}}";
+			sepNavWindowFrame = "{{424, 21}, {1265, 857}}";
+		};
+	};
+	3D24ADA50C2DBF080052C0F8 /* scene.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 3500}}";
+			sepNavSelRange = "{165, 0}";
+			sepNavVisRange = "{1917, 1273}";
+			sepNavVisRect = "{{0, 1645}, {1226, 728}}";
+			sepNavWindowFrame = "{{346, 21}, {1265, 857}}";
+		};
+	};
+	3D24ADF80C2DC9A80052C0F8 /* raytrace.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1352, 756}}";
+			sepNavSelRange = "{805, 0}";
+			sepNavVisRange = "{0, 1619}";
+			sepNavVisRect = "{{0, 28}, {1226, 728}}";
+			sepNavWindowFrame = "{{-8, 4}, {1174, 874}}";
+		};
+	};
+	3D24ADF90C2DC9A80052C0F8 /* raytrace.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 4018}}";
+			sepNavSelRange = "{8337, 0}";
+			sepNavVisRange = "{7497, 904}";
+			sepNavVisRect = "{{0, 3024}, {1226, 728}}";
+			sepNavWindowFrame = "{{418, 4}, {1174, 874}}";
+		};
+	};
+	3D280B540D0A4C1700BC2354 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 3D3069EF0C7410AF00E4580F /* tests.cpp */;
+		name = "tests.cpp: 50";
+		rLen = 66;
+		rLoc = 836;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	3D3069EE0C7410AF00E4580F /* tests.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1115, 746}}";
+			sepNavSelRange = "{141, 24}";
+			sepNavVisRange = "{0, 165}";
+			sepNavVisRect = "{{0, 0}, {0, 0}}";
+			sepNavWindowFrame = "{{619, -396}, {1174, 874}}";
+		};
+	};
+	3D3069EF0C7410AF00E4580F /* tests.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {546, 1386}}";
+			sepNavSelRange = "{836, 66}";
+			sepNavVisRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {905, 501}}";
+			sepNavWindowFrame = "{{581, 4}, {1174, 874}}";
+		};
+	};
+	3D66CEEC0C962CA400EA23DD /* images.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1115, 2450}}";
+			sepNavSelRange = "{3148, 0}";
+			sepNavVisRange = "{2738, 1082}";
+			sepNavVisRect = "{{0, 921}, {1135, 745}}";
+			sepNavWindowFrame = "{{385, 4}, {1174, 874}}";
+		};
+	};
+	3D66CF250C962F1D00EA23DD /* png.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1135, 49336}}";
+			sepNavSelRange = "{105163, 5}";
+			sepNavVisRect = "{{0, 33907}, {1135, 745}}";
+			sepNavWindowFrame = "{{239, 1}, {1174, 874}}";
+		};
+	};
+	3D66CF260C962F1D00EA23DD /* pngconf.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1135, 20776}}";
+			sepNavSelRange = "{35592, 5}";
+			sepNavVisRect = "{{0, 16253}, {1135, 745}}";
+			sepNavWindowFrame = "{{15, -1}, {1174, 874}}";
+		};
+	};
+	3D66CFF30C96391C00EA23DD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 3D24AD660C2DB8730052C0F8 /* trig.cpp */;
+		name = "trig.cpp: srgbToLSetup";
+		rLen = 0;
+		rLoc = 373;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	3D66D6530C9722A300EA23DD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 3D24AD660C2DB8730052C0F8 /* trig.cpp */;
+		name = "trig.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	3D71B67E0CFA42B700719BD1 /* vector_template.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1115, 3108}}";
+			sepNavSelRange = "{4056, 0}";
+			sepNavVisRange = "{25, 1298}";
+			sepNavWindowFrame = "{{436, 4}, {1174, 874}}";
+		};
+	};
+	3DD9EB830D1C5FF100C73064 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 3D3069EF0C7410AF00E4580F /* tests.cpp */;
+		name = "tests.cpp: 50";
+		rLen = 66;
+		rLoc = 836;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	8DD76F620486A84900D96B5E /* atrace */ = {
+		activeExec = 0;
+		executables = (
+			3D24AD550C2DB7DA0052C0F8 /* atrace */,
+		);
+	};
+}
