@@ -229,6 +229,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -324,11 +326,11 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>3DD9EB830D1C5FF100C73064</string>
+										<string>3D0B158F0D4C051800ECEFBC</string>
 										<key>history</key>
 										<array>
 											<string>3D66D6530C9722A300EA23DD</string>
-											<string>3D280B540D0A4C1700BC2354</string>
+											<string>3D9D816B0D3FB7EE00C3B711</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -354,8 +356,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -392,9 +392,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>3DD9EB840D1C5FF100C73064</string>
+				<string>3D0B15900D4C051800ECEFBC</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>3DD9EB850D1C5FF100C73064</string>
+				<string>3D0B15910D4C051800ECEFBC</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,6 +526,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>3D0B15920D4C051800ECEFBC</string>
 		<string>/Users/astrange/Projects/rt/atrace/atrace.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -550,7 +551,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -567,6 +568,8 @@
 							<string>533pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -606,7 +609,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>3DE536C40CD7D5FB002FDE72</string>
-				<string>3DC958400D08FF4C00007F1A</string>
+				<string>3D9D81460D3EB79F00C3B711</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -785,8 +788,6 @@
 							<string>387pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -822,8 +823,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>3D7C9F4F0D079A8B00DC84D4</string>
-				<string>3D7C9F500D079A8B00DC84D4</string>
+				<string>3D06E6500D3C4A4F009E9264</string>
+				<string>3D06E6510D3C4A4F009E9264</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

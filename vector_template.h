@@ -49,7 +49,7 @@ template <typename T> struct vectorX<T, N>
 		x op##= t; y op##= t; z op##= t; N4(w op##= t;)\
 		return *this;\
 	}\
-	V operator op(const T t) const { \
+	V operator op(const T t) const __attribute__((always_inline)) { \
 		return V(*this) op##= t;\
 	}\
 
@@ -155,7 +155,7 @@ template<> struct vectorX<float, N>
 		s = sse(s, _mm_set1_ps(t));\
 		return *this;\
 	}\
-	inline V operator op(const T t) const { \
+	inline V operator op(const T t) const __attribute__((always_inline)) { \
 		return V(*this) op##= t;\
 	}
 	
@@ -174,7 +174,7 @@ template<> struct vectorX<float, N>
 		operator/=(factor);
 	}
 	
-	inline V reflect(const V &normal) const {T cosI = dot(normal); return *this - (normal * (cosI * 2.));}
+	inline V reflect(const V &normal) const __attribute__((always_inline)) {T cosI = dot(normal); return *this - (normal * (cosI * 2.));}
 	
 	void set_min(const V &t) {s = _mm_min_ps(s, t.s);}
 	void set_max(const V &t) {s = _mm_max_ps(s, t.s);}

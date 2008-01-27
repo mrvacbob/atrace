@@ -50,13 +50,9 @@ struct image_texture : public texture
 	
 	image_texture(const char *png_name, bool repeat);
 	virtual ~image_texture() {if (image) delete[] image;}
-		
-private:
+	
 	color4 pixelAt(size_t x, size_t y);
-	color4 avg_of_box(size_t x, size_t y, size_t d);
-	world_distance flood_find_support_factor(size_t x, size_t y, uint8_t limit);
 	color4 colorAt(world_distance u, world_distance v);
-	color4 apply_filter(size_t x, size_t y, real *filter_x, real *filter_y, uint8_t support, bool = false);
 };
 
 struct texture_placement
@@ -66,7 +62,6 @@ struct texture_placement
 	world_distance uShift, vShift;
 	
 	texture_placement() : tex(NULL), uScale(1), vScale(1), uShift(0), vShift(0) {}
-	~texture_placement() {if (tex) delete tex;}
 };
 
 struct media
@@ -88,6 +83,7 @@ struct surface
 	size_t texcount;
 	
 	surface() : reflect(0.),diffuse(1),specular_exp(40.),filter(1),clear_reflect(true),dielectric(false),texcount(0.) {}
+	~surface() {while (texcount--) {delete textures[texcount].tex; textures[texcount].tex=NULL;}}
 	color4 colorAt(world_distance u, world_distance v);
 };
 

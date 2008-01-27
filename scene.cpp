@@ -107,65 +107,38 @@ static void make_filter(real *filter, unsigned char support, world_distance pos)
 	{filter[i + support] *= rescale;if (verbose_log) printf("filter: %d %f -> %f\n", i, p, filter[i+support]);}
 }
 
-color4 image_texture::avg_of_box(size_t x, size_t y, size_t d)
+static inline color4 apply_filter_refine(image_texture *tex, size_t x, size_t y, real *filter_x, real *filter_y, uint8_t support, bool first = true, color4 previous = color4())
 {
+	const color Yf = color(.2126,.7152,.0722);
 	color4 acc;
-	int n=0;
+	world_distance luma = 0;
 	
-	for (int i = y - d; i <= y + d; i++) {
-		for (int j = x - d; j <= x + d; j++) {
-			if (i > (y - d) && i < (y + d) && j > (x - d) && j < (x + d)) continue;
-			
-			acc = pixelAt(j,i);
-			n++;
-		}
-	}
-	
-	return acc / (real)n;
-}
-
-world_distance sqr(world_distance x) {return x*x;}
-
-world_distance image_texture::flood_find_support_factor(size_t x, size_t y, uint8_t limit)
-{
-	world_distance linear_reduction = 1;
-	const color Yf = color(.299,.587,.114);
-	world_distance Y = dot(Yf, from_premultiplied(pixelAt(x, y), NULL));
-	
-	for (int i = 1; i <= limit; i++) {
-		color4 c = avg_of_box(x, y, i);
-		world_distance avgY = dot(Yf, from_premultiplied(c, NULL));
-		if (verbose_log) printf("i %d Y %f aY %f d %f\n", i, Y, avgY, fabs(Y - avgY));
-		if (((fabs(Y - avgY)) / (((world_distance)i / (world_distance)limit))) > .5) {
-			linear_reduction = ((world_distance)(i)+.2) / sqrt(log(255.));
-			if (verbose_log) printf("limit! lr %f\n", linear_reduction);
-			break;
-		}
-	}
-	
-	return dmax(dmin(linear_reduction,1.),.1);
-}
-
-color4 image_texture::apply_filter(size_t x, size_t y, real *filter_x, real *filter_y, uint8_t support, bool hack)
-{
-	color4 acc;
-	const color Yf = color(.299,.587,.114);
-	color4 cenC;
-	world_distance Y;
-	
-	if (!hack) {cenC = apply_filter(x,y,filter_x,filter_y,support,true); Y = dot(Yf, from_premultiplied(cenC, NULL));}
+	if (!first) luma = dot(Yf, from_premultiplied(previous, NULL));
 	
 	for (int i = -support; i <= support; i++) {
 		for (int j = -support; j <= support; j++) {
 			real factor = filter_x[j + support] * filter_y[i + support];
-			color4 c = pixelAt(x+j, y+i);
-			world_distance cY;
-			if (!hack) {cY = dot(Yf, from_premultiplied(c, NULL));}
-			acc += ((hack || (fabs(Y-cY)<.4)) ? c : cenC) * factor;
+			color4 p = tex->pixelAt(x+j, y+i);
+			
+			if (first) {
+				acc += p * factor;
+			} else {
+				world_distance cY = dot(Yf, from_premultiplied(p, NULL));
+				acc += ((fabs(luma - cY) < .4) ? p : previous) * factor; 
+			}
 		}
 	}
-		
+	
 	return acc;
+}
+
+static color4 apply_filter(image_texture *tex, size_t x, size_t y, real *filter_x, real *filter_y, uint8_t support, unsigned refinements = 1)
+{
+	color4 c = apply_filter_refine(tex, x, y, filter_x, filter_y, support);
+	
+	for (unsigned i = 0; i < refinements; i++) c = apply_filter_refine(tex, x, y, filter_x, filter_y, support, false, c);
+	
+	return c;
 }
 
 color4 image_texture::colorAt(world_distance u, world_distance v)
@@ -198,7 +171,7 @@ color4 image_texture::colorAt(world_distance u, world_distance v)
 
 	make_filter(filter_x, support, ud);
 	make_filter(filter_y, support, vd);
-	color4 c = apply_filter(uf, vf, filter_x, filter_y, support);
+	color4 c = apply_filter(this, uf, vf, filter_x, filter_y, support);
 		
 	if (verbose_log) {printf("img: color res ");
 		c.print();}
