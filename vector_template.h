@@ -130,7 +130,7 @@ template<> struct vectorX<float, N>
 	
 	vectorX(const V &t) : s(t.s) {}
 	
-	T dot(const V &t) const {
+	T dot(const V &t) const __attribute__((always_inline)) {
 		T ret;
 		__m128 tmp = _mm_mul_ps(s, t.s);
 		if (N!=4) tmp = zero_w_sse(tmp);
@@ -148,7 +148,7 @@ template<> struct vectorX<float, N>
 		s = sse(s, t.s);\
 		return *this;\
 	}\
-	V operator op(const V &t) const { \
+	V operator op(const V &t) const __attribute__((always_inline)) { \
 		return V(*this) op##= t;\
 	}\
 	V &operator op##=(const T t) { \
@@ -184,7 +184,7 @@ template<> struct vectorX<float, N>
 	
 	friend V normalize(const V &t) {V tmp(t); tmp.normalize(); return tmp;}
 	
-	friend T dot(const V &a, const V &b) {return a.dot(b);}
+	friend T dot(const V &a, const V &b) __attribute__((always_inline)) {return a.dot(b);}
 	friend V cross(const V &a, const V &b) {return a.cross(b);}
 	friend V blend(const V &a, const V &b, T weight) {		
 		return (a * weight) + (b * (1. - weight));
