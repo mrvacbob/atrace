@@ -1,0 +1,37 @@
+This is a raytracer I wrote once since I didn't think I knew enough math.
+I never actually got a chance to use any 3D matrices, so I still don't know them,
+but I think there were some neat parts in here.
+
+I don't like raytracing anymore, though; it's good for refraction but good
+antialiasing and textures are too hard. If I work on this again I'll ditch
+it completely and do forward raytracing for global illumination, then
+some kind of normal rasterization pass with edge AA+good textures (or try
+to combine them in some way so it can still have camera effects).
+
+=======================================
+Neat parts
+=======================================
+
+* Better-than-bilinear texture interpolation
+* Attempts to be more correct than usual for image import/export - 
+images are properly converted between sRGB and linear FP RGB using noise shaping.
+* Simulates unpolarized Fresnel equations (well, the partial form usually given, anyway)
+* A backtracking hack for caustics without doing global illumination
+* SSSE3 accelerated vector class
+* A somewhat-successful adaptive/nonlinear texture interpolation algorithm,
+which I should put in its own program
+
+=======================================
+Not-neat parts
+=======================================
+
+* It's unreadable. Although I'd like to think it's better than the tutorials 
+I read first (which are full of bad code written by people who learned style
+from Windows C++ programming)
+* No collision acceleration structure. kd-tree is easy, I just never got around to it.
+It is pretty fast considering this+backtracking, though.
+* The texture interpolation has a fixed-sized support (since determining the correct support
+is impossible with ray tracing, unless you do beam tracing or ray differentials, and I don't
+understand either), so it'll look bad if textures are effectively downsized.
+* You can only do spheres and checkerboards, which means I'm in Raytracing Hell
+* And you have to declare them all in code
