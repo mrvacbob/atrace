@@ -129,10 +129,7 @@ int main (int argc, char * const argv[]) {
 	
 	//run_tests();
 		
-	tr.render(w,h,cam)->write_to_bmp("spheres.bmp");
-	
-	for (int i = 0; i < primi; i++) delete prims[i];
-	delete[] prims;
+	tr.render(w,h,cam)->write_to_bmp("scene.bmp");
 		
 	return 0;
 }

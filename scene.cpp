@@ -173,8 +173,7 @@ color4 image_texture::colorAt(world_distance u, world_distance v)
 	make_filter(filter_y, support, vd);
 	color4 c = apply_filter(this, uf, vf, filter_x, filter_y, support);
 		
-	if (verbose_log) {printf("img: color res ");
-		c.print();}
+	if (verbose_log) {printf("img: color res "); c.print();}
 	
 	return c;
 }
