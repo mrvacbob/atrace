@@ -20,7 +20,6 @@
 		3D66CF2A0C962F3700EA23DD /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D66CF290C962F3700EA23DD /* libpng.dylib */; };
 		3D66D53B0C971F4000EA23DD /* tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3069EF0C7410AF00E4580F /* tests.cpp */; };
 		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
-		8DD76F6A0486A84900D96B5E /* atrace.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* atrace.1 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,7 +29,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				8DD76F6A0486A84900D96B5E /* atrace.1 in CopyFiles */,
 				3D24AD670C2DB8730052C0F8 /* trig.h in CopyFiles */,
 				3D24AD6E0C2DB89D0052C0F8 /* atrace.h in CopyFiles */,
 				3D24ADA60C2DBF080052C0F8 /* scene.h in CopyFiles */,
@@ -59,7 +57,6 @@
 		3D66CF290C962F3700EA23DD /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = /sw/lib/libpng.dylib; sourceTree = "<absolute>"; };
 		3D71B67E0CFA42B700719BD1 /* vector_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector_template.h; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* atrace */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = atrace; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6859E8B029090EE04C91782 /* atrace.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = atrace.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +131,6 @@
 		C6859E8C029090F304C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				C6859E8B029090EE04C91782 /* atrace.1 */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
