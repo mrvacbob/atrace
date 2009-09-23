@@ -21,10 +21,16 @@
 #define TWOPI 6.28318530717958647692
 
 #define LOWPRECISION
+
 #ifdef LOWPRECISION
+
 #ifdef __SSSE3__
 #define SSEVEC
+#include <pmmintrin.h>
+static inline __m128 sse_1000() {return (__m128)_mm_set_epi32(-1,0,0,0);}
+static inline __m128 zero_w_sse(__m128 s) {return _mm_andnot_ps(sse_1000(), s);}
 #endif
+
 #define EPSILON ((world_distance)(1./4096.))
 
 typedef float world_distance;
@@ -97,12 +103,6 @@ static inline uint8_t dithered_fromL(f_real v, f_real *error)
 template <typename T, int N> struct vectorX
 {
 };
-
-#ifdef __SSSE3__
-#include <pmmintrin.h>
-static inline __m128 sse_1000() {return (__m128)_mm_set_epi32(-1,0,0,0);}
-static inline __m128 zero_w_sse(__m128 s) {return _mm_andnot_ps(sse_1000(), s);}
-#endif
 
 #define N 3
 #include "vector_template.h"
