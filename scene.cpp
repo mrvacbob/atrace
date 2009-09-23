@@ -187,7 +187,7 @@ static color4 rec_colorOfTextureStackAt(texture_placement *textures, world_dista
 {	
 	color4 thisC = color_of_placement(&textures[i], u, v);
 	
-	if (verbose_log) {printf("tex recurse: i %d, this color ",i); thisC.print();}
+	if (verbose_log) {printf("tex recurse: i %lu, this color ",i); thisC.print();}
 	color4 resC = over(above, thisC);
 	if (i == 0 || close(thisC.a, 1)) return resC;		
 	return rec_colorOfTextureStackAt(textures, u, v, i-1, resC);
@@ -197,7 +197,7 @@ static color4 colorOfTextureStackAt(texture_placement *textures, world_distance 
 {
 	color4 thisC = color_of_placement(&textures[texcount-1], u, v);
 	
-	if (verbose_log) {printf("tex stack top: tcount %d, color ",texcount); thisC.print();}
+	if (verbose_log) {printf("tex stack top: tcount %lu, color ",texcount); thisC.print();}
 	if (texcount == 1 || close(thisC.a, 1)) return thisC;
 	return rec_colorOfTextureStackAt(textures, u, v, texcount-2, thisC);
 }
