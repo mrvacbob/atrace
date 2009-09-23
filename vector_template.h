@@ -108,7 +108,7 @@ template <typename T> struct vectorX<T, N>
 #endif
 };
 
-#ifdef __SSSE3__
+#ifdef SSEVEC
 #include <pmmintrin.h>
 
 template<> struct vectorX<float, N>
