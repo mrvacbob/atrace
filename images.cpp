@@ -89,12 +89,13 @@ image_texture::image_texture(const char *name, bool repeat) : repeat(repeat)
 	image = new color4[rb * (h + IMG_SUPPORT*2)];
 	
 	{
-		png_bytep rows[h];
+		png_bytep *rows = new png_bytep[h];
 		
 		for (ssize_t i = 0; i < h; i++) 
 			rows[i] = &image8[rb8*i];
 		
 		png_read_image(pngs, rows);
+        delete[] rows;
 	}
 	
 	png_destroy_read_struct(&pngs, &pngi, NULL);

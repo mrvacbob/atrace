@@ -125,6 +125,7 @@ template<> struct vectorX<float, N>
 	void zero_w() {s=zero_w_sse(s);}
 	vectorX(T a_, T b, T c, T d = 1) : s(_mm_setr_ps(a_,b,c,d)) {}
 	vectorX(T v) : s(_mm_set1_ps(v)) {if (N!=4) zero_w();}
+    vectorX(double v) : s(_mm_set1_ps(v)) {if (N!=4) zero_w();}
 	vectorX(__m128 s) : s(s) {}
 	vectorX() : s(_mm_set1_ps(0)) {}
 	
