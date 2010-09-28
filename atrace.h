@@ -19,7 +19,6 @@
 #include <limits.h>
 #include <stdint.h>
 #include <sys/types.h>
-//#include <algorithm>
 #define VERSION "1"
 #define TRACE_DEPTH 10
 
