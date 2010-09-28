@@ -90,7 +90,6 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 		
 	vector3 N = pi->normalAt(tray);
 	
-	bool any_phong_lighting = false;
 	media *exiting_medium = medium, *entering_medium = (res == HITINSIDE) ? &sc.atmosphere : &pi->med;
 	
 	if (verbose_log) printf("trace %d: %s %p (%d) at (%f, %f, %f), normal (%f, %f, %f), exiting RI %f entering RI %f\n", index, pi->type(), pi, res,
@@ -119,7 +118,6 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 				if (phong_spec > 0) specularc = (pi->mat.clear_reflect ? light_color : local_color) * pow(phong_spec, pi->mat.specular_exp);
 				
 				phong += blend(diffusec, specularc, pi->mat.diffuse);
-				any_phong_lighting=true;
 			}
 		}
 		FOR_EACH_LIGHT_END();
