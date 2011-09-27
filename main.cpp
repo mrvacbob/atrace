@@ -17,7 +17,8 @@
 #include "raytrace.h"
 #include "tests.h"
 
-/*static primitive **lots_of_spheres(int *pi)
+#if 0
+static primitive **lots_of_spheres(int *pi)
 {
 	primitive **prims = new primitive*[500];
 
@@ -72,7 +73,7 @@
 	*pi = primi;
 	return prims;
 }
-*/
+#endif
 
 static void set_color(primitive *p, color4 c)
 {
