@@ -63,6 +63,11 @@ image_texture::image_texture(const char *name, bool repeat) : repeat(repeat)
 	FILE *f = fopen(name, "rb");
 	uint8_t sig[8];
 	
+    if (!f) {
+        fprintf(stderr, "Couldn't load texture %s.\n", name);
+        exit(1);
+    }
+
 	fread(sig, 1, 8, f);
 	if (!png_check_sig(sig, 8)) {printf("nyoro~n\n"); return;}
 	
@@ -85,7 +90,6 @@ image_texture::image_texture(const char *name, bool repeat) : repeat(repeat)
 	
 	png_get_IHDR(pngs, pngi, &pw, &ph, &bit_depth, &color_type, NULL, NULL, NULL);
 	
-	// no images greater than SSIZE_MAX size, whatever will I do
 	w = pw;
 	h = ph;
 	
