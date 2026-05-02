@@ -75,7 +75,7 @@ image_texture::image_texture(const char *name, bool repeat) : repeat(repeat)
 	png_structp pngs = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	png_infop pngi = png_create_info_struct(pngs);
 	
-	if (setjmp(pngs->jmpbuf)) {
+	if (setjmp(png_jmpbuf(pngs))) {
 		png_destroy_read_struct(&pngs, &pngi, NULL);
 		fclose(f);
 		return;
@@ -175,8 +175,8 @@ void image::write_to_bmp(const char *path)
 		}
 	}
 	
-	h1 = (bmph1){0x42,0x4D,w*h*4+12+40,0,0,12+40+2};
-	h2 = (bmph2){40,w,h,1,32,0,w*h*4,72,72,0,0};
+	h1 = (bmph1){0x42,0x4D,(uint32_t)(w*h*4+12+40),0,0,12+40+2};
+	h2 = (bmph2){40,(uint32_t)w,(uint32_t)h,1,32,0,(uint32_t)(w*h*4),72,72,0,0};
 	
 	fwrite(&h1,sizeof(h1),1,img);
 	fwrite(&h2,sizeof(h2),1,img);

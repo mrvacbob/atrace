@@ -91,7 +91,9 @@ template <typename T> struct vectorX<T, N>
 	}
 	
 	friend T dot(const V &a, const V &b) {return a.dot(b);}
+#if N != 4
 	friend V cross(const V &a, const V &b) {return a.cross(b);}
+#endif
 	friend V blend(const V &a, const V &b, T weight) {		
 		return (a * weight) + (b * (1. - weight));
 	}
