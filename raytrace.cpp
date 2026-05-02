@@ -238,8 +238,8 @@ image *raytracer::render(size_t w, size_t h, const camera &cam)
 	for (size_t y=0; y < h; y++) {
 		for (size_t x=0; x < w; x++) {
 			//if ((x == 841 && y == 313)) verbose_log=true;
-			world_distance dist = 0;//,mdist=0;
-			/*world_distance gauss_side = exp(-.5 * (.5*.5 + .5*.5)), gauss_mid = exp(0.);
+			world_distance dist = 0,mdist=0;
+			world_distance gauss_side = exp(-.5 * (.5*.5 + .5*.5)), gauss_mid = exp(0.);
 			int aa=0;
 			color mc;
 			
@@ -254,17 +254,17 @@ image *raytracer::render(size_t w, size_t h, const camera &cam)
 					aa++;
 				}
 			}
-			*/
+			
 			point3 eye = screen_ul + point3(dx * (x+.5), dy * (y+.5),0);
 			ray r = ray_from_to(cam.origin,eye);
 			color c = trace(r, &dist, &sc.atmosphere);
-/*
+
 			c += mc;
 			dist += mdist;
 			
 			c /= gauss_mid + (gauss_side*6.);
 			dist /= gauss_mid + (gauss_side*6.);
-*/			
+			
 			f_pixel outc(c.r,c.g,c.b); 
 			target->set(x,y, outc, dist);
             //verbose_log=false;

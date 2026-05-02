@@ -27,7 +27,8 @@ Not-neat parts
 * It's unreadable. Although I'd like to think it's better than the tutorials 
 I read first.
 * No collision acceleration. It is pretty fast considering this+backtracking, though.
-* The texture interpolation has a fixed-sized support, so it'll look bad if textures are effectively downsized.
+* The texture interpolation has a fixed-sized support, so it'll look bad if textures are effectively downsized (needs ray differentials)
+* Needs anisotropy
 * You can only do spheres and checkerboards.
 * No scene file format.
 
@@ -36,4 +37,4 @@ Short-term todo
 ======================================
 
 * Fix top half of the image being black.
-* Adopt Cook-Torrance instead of Phong+Fresnel.
+* Adopt Cook-Torrance instead of Phong+Fresnel, or read http://renderwonk.com/publications/s2010-shading-course 

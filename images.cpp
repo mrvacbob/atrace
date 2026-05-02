@@ -17,6 +17,7 @@
 #include "scene.h"
 #include "raytrace.h"
 #include <png.h>
+#include <stdlib.h>
 
 static void image_8bit_to_fp(const uint8_t *im8, color4 *imf, uint8_t channels, size_t w, size_t h)
 {
