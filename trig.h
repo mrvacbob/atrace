@@ -70,16 +70,6 @@ template <typename T> void swap(T &a, T &b)
 	b = c;
 }
 
-static size_t wrap(ssize_t i, ssize_t off, ssize_t m, bool modulo)
-{
-	i += off;
-	
-	if (modulo) {
-		i = (i < 0) ? (i + m) : ((i >= m) ? (i - m) : i);
-	} else i = dmin(dmax(i, 0), m-1);
-	
-	return i;
-}
 
 extern real srgbToL[256];
 

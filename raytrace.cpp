@@ -240,9 +240,10 @@ image *raytracer::render(size_t w, size_t h, const camera &cam)
 			//if ((x == 841 && y == 313)) verbose_log=true;
 			world_distance dist = 0,mdist=0;
 			world_distance gauss_side = exp(-.5 * (.5*.5 + .5*.5)), gauss_mid = exp(0.);
-			int aa=0;
 			color mc;
-			
+
+			// 2x2 supersampling AA: traces 4 corner sub-pixels + 1 center sample below, Gaussian-weighted.
+			// TODO: overkill for a basic raytracer; consider removing in favour of center-only trace.
 			for (int ay=0; ay < 2; ay++) {
 				for (int ax=0; ax < 2; ax++) {
 					world_distance adist;
@@ -251,7 +252,6 @@ image *raytracer::render(size_t w, size_t h, const camera &cam)
 					color ac = trace(r, &adist, &sc.atmosphere);
 					mc += ac*gauss_side;
 					mdist += adist*gauss_side;
-					aa++;
 				}
 			}
 			

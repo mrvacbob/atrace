@@ -164,7 +164,7 @@ struct camera
 	camera() : origin(), screen() {}
 };
 
-class raytracer;
+struct raytracer;
 
 struct scene
 {

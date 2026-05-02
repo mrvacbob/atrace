@@ -22,6 +22,4 @@
 #define VERSION "1"
 #define TRACE_DEPTH 10
 
-using namespace std;
-
 #endif

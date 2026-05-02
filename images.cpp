@@ -44,6 +44,15 @@ static void dump_px(FILE *ex, real *p)
 	}
 }*/
 
+static size_t wrap(ssize_t i, ssize_t off, ssize_t m, bool modulo)
+{
+	i += off;
+	if (modulo) {
+		i = (i < 0) ? (i + m) : ((i >= m) ? (i - m) : i);
+	} else i = dmin(dmax(i, (ssize_t)0), m-1);
+	return i;
+}
+
 static void fill_edges(color4 *image, ssize_t w, ssize_t h, bool repeat)
 {
 	//FILE *ex = fopen("edges.raw", "wb");
