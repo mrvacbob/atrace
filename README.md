@@ -1,5 +1,7 @@
 ![Reference render](reference.png)
 
+**[Interactive WebGL preview](https://htmlpreview.github.io/?https://github.com/mrvacbob/atrace/blob/master/scene.html)**
+
 This is a raytracer I wrote once since I didn't think I knew enough math.
 I never actually got a chance to use any 3D matrices, so I still don't know them,
 but I think there were some neat parts in here.
