@@ -49,23 +49,47 @@ static real fresnelR(const ray &r, const vector3 &N, real n1, real n2)
 
 bool raytracer::light_reaches(primitive *light, primitive *pi, const point3 &to, color *c, vector3 *L, const media *medium, unsigned index) const
 {
+	// Fast path: try center of light sphere first.
+	// This handles the common unobstructed case in one trace call.
 	ray p_to_L = ray_from_to(to, light->origin);
-	world_distance test_dist = 0;
-
 	primitive *test_p = nullptr;
-	if (verbose_log) printf("%d: ---- lighting ------\n", index);
-	color falling_on = trace(p_to_L, &test_dist, medium, nullptr, nullptr, index, &test_p);
-	if (verbose_log) printf("%d: ---- lighting end ------\n", index);
-	if (!test_p) return false;
-	if (c) *c = falling_on;
-	if (L) *L = p_to_L.dir;
+	color falling_on = trace(p_to_L, nullptr, medium, nullptr, nullptr, index, &test_p);
+	if (test_p) {
+		if (c) *c = falling_on;
+		if (L) *L = p_to_L.dir;
+		return true;
+	}
+
+	// Centre missed.  For sphere lights, try 4 offset positions on the equator
+	// facing the shaded point — this lets refracted caustics through the glass
+	// sphere show up: some offset targets are reachable via refraction even when
+	// the center isn't.  Only costs extra traces in shadow / caustic regions.
+	const sphere *ls = dynamic_cast<const sphere *>(light);
+	if (!ls || ls->rad == 0.f) return false;
+
+	world_distance r = ls->rad;
+	vector3 d = normalize(light->origin - to);
+	vector3 t1 = normalize((fabsf(d.x) < 0.9f ? vector3(1,0,0) : vector3(0,1,0)).cross(d));
+	vector3 t2 = d.cross(t1);
+
+	static const float off[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+	color acc;
+	bool any_hit = false;
+	for (auto &o : off) {
+		point3 target = light->origin + t1 * (r * o[0]) + t2 * (r * o[1]);
+		primitive *tp = nullptr;
+		color hit = trace(ray_from_to(to, target), nullptr, medium, nullptr, nullptr, index, &tp);
+		if (tp) { acc += hit; if (!any_hit) { if (L) *L = ray_from_to(to, target).dir; any_hit = true; } }
+	}
+	if (!any_hit) return false;
+	if (c) *c = acc * (1.f / 5);  // average over all 5 samples (center + 4)
 	return true;
 }
 
 color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primitive *pi, const media *medium, unsigned index, intersectResult res, primitive **backtracking) const
 {
-	color phong, reflected, refracted;
-	real reflect_weight = 0, refract_weight = 0, absorbance_factor = 1.f;
+	color phong, reflected, refracted, dielectric_specular;
+	real reflect_weight = 0, refract_weight = 0;
 	ray tray = r.rayAt(dist);
 	point3 p = tray.origin;
 	real local_alpha;
@@ -93,7 +117,7 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 			if (light_reached) {
 				real phong_diff = dot(N, L);
 				vector3 R = L.reflect(N);
-				real phong_spec = dot(r.dir, R);
+				real phong_spec = -dot(r.dir, R);
 
 				color diffusec, specularc;
 
@@ -101,6 +125,7 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 				if (phong_spec > 0) specularc = (pi->mat.clear_reflect ? light_color : local_color) * powf(phong_spec, pi->mat.specular_exp);
 
 				phong += blend(diffusec, specularc, pi->mat.diffuse);
+				if (pi->mat.dielectric) dielectric_specular += specularc;
 			}
 		}
 		FOR_EACH_LIGHT_END();
@@ -121,6 +146,12 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 		if (verbose_log) printf("%d: reflection\n", index);
 		reflected = trace(reflect_ray, nullptr, medium, nullptr, nullptr, index, backtracking);
 		if (!pi->mat.clear_reflect) reflected *= local_color;
+		// Dielectric Phong highlight via reflected channel: the mirror ray rarely hits
+		// the 0.2-radius light sphere, so add the Phong specular lobe here instead.
+		// Gets correctly Fresnel-scaled (~4% at normal incidence, 100% at grazing)
+		// so it's subtle directly but gives a bright rim; consistent in secondary views.
+		// In a full path tracer this would be MIS / next-event estimation.
+		if (pi->mat.dielectric) reflected += dielectric_specular;
 	}
 
 	if (refract_weight > 0) {
@@ -136,16 +167,35 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 
 			refracted = trace(refract_ray, &traced_dist, entering_medium, nullptr, nullptr, index, backtracking);
 
-			if (medium->transmittance < 1.f)
-				absorbance_factor = expf(-((1.f - medium->transmittance) * traced_dist));
+			// Per-channel Beer-Lambert: apply the *entering* medium's absorption
+			// over traced_dist, which at HIT is the chord through the medium interior.
+			// Using entering_medium (not exiting medium) ensures absorption is applied
+			// while traveling through the glass, not over the post-exit distance.
+			const color &ac = entering_medium->absorption;
+			color abs_factor(powf(ac.r, traced_dist),
+			                 powf(ac.g, traced_dist),
+			                 powf(ac.b, traced_dist));
+			refracted *= abs_factor;
 
-			if (verbose_log) printf("%d: traced_dist %f, transmitted result %f\n", index, traced_dist, absorbance_factor);
+			// Emission integral: em * (1 - exp(-k*L)) / k = em * (1 - abs_factor) / k
+			// where k = -log(ac). Approximates single-scattering / inky self-glow —
+			// center (long path) accumulates more emission than edges (short path).
+			const color &em = entering_medium->emission;
+			if (em.r > 0.f || em.g > 0.f || em.b > 0.f) {
+				auto emit_ch = [](float e, float a, float absfac) -> float {
+					if (a >= 1.f - 1e-5f) return 0.f;           // no absorption → no path-length glow
+					return e * (1.f - absfac) / -logf(a);
+				};
+				refracted += color(emit_ch(em.r, ac.r, abs_factor.r),
+				                   emit_ch(em.g, ac.g, abs_factor.g),
+				                   emit_ch(em.b, ac.b, abs_factor.b));
+			}
+
+			if (verbose_log) printf("%d: traced_dist %f\n", index, traced_dist);
 		}
 	}
 
-	refract_weight *= absorbance_factor;
-
-	real surface_weight = 1.f - reflect_weight - refract_weight;
+	real surface_weight = dmax(0.f, 1.f - reflect_weight - refract_weight);
 	return phong * surface_weight + reflected * reflect_weight + refracted * refract_weight;
 }
 
@@ -193,7 +243,7 @@ color raytracer::trace(const ray &r, world_distance *dist, const media *medium, 
 	if (index == 0 || index > static_cast<unsigned>(TRACE_DEPTH)) {if (dist) *dist = HUGE_VAL; return color(0.f);}
 	world_distance col_dist;
 	intersectResult ires;
-	color c(background);
+	color c = backtracking ? color(0.f) : background;
 
 	primitive *p = find_primitive_along(r, &col_dist, true, ignore, &ires);
 
@@ -214,13 +264,35 @@ std::unique_ptr<image> raytracer::render(size_t w, size_t h, const camera &cam) 
 	world_distance dy = -(cam.screen.h/dh), dx = cam.screen.w/dw;
 	point3 screen_ul = cam.screen.origin + point3(-(cam.screen.w/2.f), cam.screen.h/2.f, 0);
 
+	// Gaussian-weighted supersampling (5 rays per pixel).
+	// Centre ray at (x+0.5, y+0.5): weight 1.0.
+	// Four quadrant rays at offsets (0.25,0.25),(0.25,0.75),(0.75,0.25),(0.75,0.75): weight w_q
+	//   (d² = 0.25²+0.25² = 0.125, sigma = 0.35 → w_q = exp(-0.125/(2·0.35²)) ≈ 0.601).
+
+	static constexpr real sigma2 = 2.f * 0.35f * 0.35f;   // 2σ²
+	const real w_q     = expf(-0.125f / sigma2);           // ≈ 0.601
+	const real w_total = 1.f + 4.f * w_q;
+
+	static const world_distance offsets[2] = {0.25f, 0.75f};
+
 	for (size_t y = 0; y < h; y++) {
 		for (size_t x = 0; x < w; x++) {
-			world_distance dist;
-			point3 eye = screen_ul + point3(dx * (x+.5f), dy * (y+.5f), 0);
-			ray r = ray_from_to(cam.origin, eye);
-			color c = trace(r, &dist, &sc.atmosphere);
-			target->set(x, y, f_pixel(c.r, c.g, c.b), dist);
+			world_distance dist_ctr;
+			point3 eye_ctr = screen_ul + point3(dx * (x + 0.5f), dy * (y + 0.5f), 0);
+			color acc = trace(ray_from_to(cam.origin, eye_ctr), &dist_ctr, &sc.atmosphere);
+			world_distance dist_acc = dist_ctr;
+
+			for (world_distance oy : offsets) {
+				for (world_distance ox : offsets) {
+					world_distance dist;
+					point3 eye = screen_ul + point3(dx * (x + ox), dy * (y + oy), 0);
+					acc      += trace(ray_from_to(cam.origin, eye), &dist, &sc.atmosphere) * w_q;
+					dist_acc += dist * w_q;
+				}
+			}
+			acc      = acc      * (1.f / w_total);
+			dist_acc = dist_acc * (1.f / w_total);
+			target->set(x, y, f_pixel(acc.r, acc.g, acc.b), dist_acc);
 		}
 	}
 

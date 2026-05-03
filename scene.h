@@ -20,9 +20,12 @@
 struct media
 {
 	real refractive_index;
-	real transmittance; // 1 - absorbance (this math is wrong)
+	real transmittance;   // fraction of surface energy that refracts (used for refract_weight)
+	color absorption;     // per-channel Beer-Lambert: surviving fraction per world unit
+	                      // (1,1,1)=clear, (0.96,0.97,1)=slight blue tint
+	color emission;       // self-emission per world unit (approximates single-scattering/Mie glow)
 
-	media() : refractive_index(1), transmittance(0) {}
+	media() : refractive_index(1), transmittance(0), absorption(1.f), emission(0.f) {}
 };
 
 struct surface

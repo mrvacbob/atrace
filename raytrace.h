@@ -22,7 +22,7 @@ struct image
 {
 	std::unique_ptr<f_pixel[]> buf;
 	std::unique_ptr<f_real[]> depth_buf;
-	f_real minv, maxv;
+	f_real exposure;  // set by finish() via log-average luminance
 	size_t w, h;
 
 	image(size_t w, size_t h);
@@ -30,6 +30,7 @@ struct image
 	image &operator=(const image &) = delete;
 
 	void write_to_bmp(const char *path) const;
+	void write_to_hdr(const char *path) const;
 
 	inline void set(size_t x, size_t y, const f_pixel p, f_real depth) {
 		buf[y*w + x] = p;
@@ -37,10 +38,6 @@ struct image
 	}
 
 	void finish();
-
-	f_pixel autolevel(const f_pixel &p) const {
-		return p.range_fit(minv, maxv);
-	}
 };
 
 struct raytracer
