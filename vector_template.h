@@ -15,9 +15,9 @@
  */
 
 #if N == 4
-#define N4(x...) x 
+#define N4(...) __VA_ARGS__
 #else
-#define N4(x...) 
+#define N4(...)
 #endif
 
 template <typename T> struct vectorX<T, N>
@@ -32,7 +32,7 @@ template <typename T> struct vectorX<T, N>
 	
 	vectorX(const T v[N]) : x(v[0]), y(v[1]), z(v[2]) N4(, w(v[3])) {}
 	vectorX(const T a, const T b, const T c N4(, const T d = 1)) : x(a), y(b), z(c) N4(, w(d)) {}
-	vectorX(const T v) : x(v), y(v), z(v) N4(, w(v)) {}
+	explicit vectorX(const T v) : x(v), y(v), z(v) N4(, w(v)) {}
 	vectorX() : x(0), y(0), z(0) N4(, w(0)) {}
 	
 	vectorX(const V &t) : x(t.x), y(t.y), z(t.z) N4(, w(t.w)) {}
@@ -94,33 +94,33 @@ template <typename T> struct vectorX<T, N>
 #if N != 4
 	friend V cross(const V &a, const V &b) {return a.cross(b);}
 #endif
-	friend V blend(const V &a, const V &b, T weight) {		
-		return (a * weight) + (b * (1. - weight));
+	friend V blend(const V &a, const V &b, T weight) {
+		return (a * weight) + (b * (T(1) - weight));
 	}
-	
+
 	friend T distance_between(const V &a, const V &b)
 	{
-		return sqrt((a - b).dot_self());
-	}	
-	
+		return sqrtf((a - b).dot_self());
+	}
+
 	friend V normalize(const V &t) {V tmp(t); tmp.normalize(); return tmp;}
-	
+
 	friend V points_away_from(const V &normal, const V &dir)
 	{
 		return (dir.dot(normal) < 0) ? normal : -normal;
 	}
-	
+
 #if N == 4
-	void print() const {printf("x %f y %f z %f w %f\n",x,y,z,w);}	
+	void print() const {printf("x %f y %f z %f w %f\n",x,y,z,w);}
 #else
-	void print() const {printf("x %f y %f z %f\n",x,y,z);}	
+	void print() const {printf("x %f y %f z %f\n",x,y,z);}
 #endif
 };
 
 #ifdef SSEVEC
 #include <pmmintrin.h>
 
-template<> struct vectorX<float, N>
+template<> struct alignas(16) vectorX<float, N>
 {
 	typedef float T;
 	typedef vectorX<float, N> V;
@@ -133,9 +133,9 @@ template<> struct vectorX<float, N>
 	
 	void zero_w() {s=zero_w_sse(s);}
 	vectorX(T a_, T b, T c, T d = 1) : s(_mm_setr_ps(a_,b,c,d)) {}
-	vectorX(T v) : s(_mm_set1_ps(v)) {if (N!=4) zero_w();}
-    vectorX(double v) : s(_mm_set1_ps(v)) {if (N!=4) zero_w();}
-	vectorX(__m128 s) : s(s) {}
+	explicit vectorX(T v) : s(_mm_set1_ps(v)) {if (N!=4) zero_w();}
+	explicit vectorX(double v) : s(_mm_set1_ps(static_cast<float>(v))) {if (N!=4) zero_w();}
+	vectorX(__m128 v_) : s(v_) {}
 	vectorX() : s(_mm_set1_ps(0)) {}
 	
 	vectorX(const V &t) : s(t.s) {}
@@ -196,8 +196,8 @@ template<> struct vectorX<float, N>
 	
 	friend T dot(const V &a, const V &b) __attribute__((always_inline)) {return a.dot(b);}
 	friend V cross(const V &a, const V &b) {return a.cross(b);}
-	friend V blend(const V &a, const V &b, T weight) {		
-		return (a * weight) + (b * (1. - weight));
+	friend V blend(const V &a, const V &b, T weight) {
+		return (a * weight) + (b * (T(1) - weight));
 	}
 	
 	V &operator=(const V &t) {s=t.s; return *this;}
@@ -223,7 +223,7 @@ template<> struct vectorX<float, N>
 	
 	void print() const {if (N!=4) printf("x %f y %f z %f\n",x,y,z);
 	else printf("x %f y %f z %f w %f\n",x,y,z,w);}
-} __attribute__((aligned));
+};
 #endif
 
 #undef N4

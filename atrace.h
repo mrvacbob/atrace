@@ -14,12 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef __atrace_h
-#define __atrace_h
-#include <limits.h>
-#include <stdint.h>
+#pragma once
+#include <climits>
+#include <cstdint>
 #include <sys/types.h>
 #define VERSION "1"
-#define TRACE_DEPTH 10
-
-#endif
+static constexpr int TRACE_DEPTH = 10;

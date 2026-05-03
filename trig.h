@@ -14,11 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef __trig_h
-#define __trig_h
+#pragma once
 #include "atrace.h"
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdio>
 
 #ifdef M_PI
 #define PI M_PI
@@ -27,51 +26,25 @@
 #endif
 #define TWOPI 6.28318530717958647692
 
-#ifndef HIGHPRECISION
-#define LOWPRECISION
-#endif
-
-#ifdef LOWPRECISION
-
 #ifdef __SSSE3__
 #define SSEVEC
 #include <pmmintrin.h>
-static inline __m128 sse_1000() {return (__m128)_mm_set_epi32(-1,0,0,0);}
+static inline __m128 sse_1000() {return _mm_castsi128_ps(_mm_set_epi32(-1,0,0,0));}
 static inline __m128 zero_w_sse(__m128 s) {return _mm_andnot_ps(sse_1000(), s);}
 #endif
-
-#define EPSILON ((world_distance)(1./4096.))
 
 typedef float world_distance;
 typedef world_distance angle;
 typedef float real;
-#define pow powf
-#define exp expf
-#define sqrt sqrtf
-#define fabs fabsf
-#define fmod fmodf
-#else
-#define EPSILON ((world_distance)(1./1099511627776.))
-
-typedef double world_distance;
-typedef world_distance angle;
-typedef double real;
-#endif
 typedef float f_real;
+
+static constexpr world_distance EPSILON = 1.f/4096.f;
 
 template<typename T, typename T2> T dmin(T a, T2 b) {return (a <= b) ? a : b;}
 template<typename T, typename T2> T dmax(T a, T2 b) {return (a >= b) ? a : b;}
 
-static inline bool close(world_distance a, world_distance b) {return fabs(a-b) <= EPSILON;}
+static inline bool close(world_distance a, world_distance b) {return fabsf(a-b) <= EPSILON;}
 static inline bool above(world_distance a, world_distance b) {return (a - b) >= EPSILON;}
-
-template <typename T> void swap(T &a, T &b)
-{
-	T c = a;
-	a = b;
-	b = c;
-}
-
 
 extern real srgbToL[256];
 
@@ -84,17 +57,17 @@ static inline uint8_t colorFromL(f_real v)
 {
 	const f_real a = .055f;
 	f_real v_srgb = (v > .0031308f) ? ((a + 1.f) * powf(v, 1.f/2.4f) - a) : (v * 12.92f);
-		
-	return dmin(dmax((int)lrintf(v_srgb * 255.f), 0), 255);
+
+	return static_cast<uint8_t>(dmin(dmax(static_cast<int>(lrintf(v_srgb * 255.f)), 0), 255));
 }
 
 static inline uint8_t dithered_fromL(f_real v, f_real *error)
 {
 	f_real er = *error, v_er = v+er;
-	
+
 	uint8_t o = colorFromL(v_er);
 	f_real v2 = colorToL(o);
-	
+
 	*error = v_er-v2;
 	return o;
 }
@@ -122,7 +95,7 @@ typedef vectorX<uint8_t, 3> pixel8;
 
 static inline color4 over(color4 above, color4 below)
 {
-	return above + below*(1.-above.a);
+	return above + below*(1.f-above.a);
 }
 
 static inline color4 c3to4(color c)
@@ -148,13 +121,12 @@ static inline color c4to3(color4 c)
 static inline color4 to_premultiplied(color c, real a)
 {
 	color4 res = c3to4(c);
-	
 	return res * a;
 }
 
 static inline color4 to_premultiplied(color4 cs) {return to_premultiplied(c4to3(cs), cs.a);}
 
-static inline color from_premultiplied(color4 c, real *a = NULL)
+static inline color from_premultiplied(color4 c, real *a = nullptr)
 {
 	real resa = c.a;
 
@@ -164,22 +136,18 @@ static inline color from_premultiplied(color4 c, real *a = NULL)
 	return c4to3(c / resa);
 }
 
-static inline color strip_alpha(color4 c)
-{
-	return c4to3(c*c.a);
-}
-
 struct ray
 {
 	point3 origin;
 	vector3 dir;
-	
-	ray(const point3 &o, const vector3 &d, bool should_normalize = true) __attribute__((always_inline)) : origin(o), dir(should_normalize ? normalize(d) : d) {}
-	
+
+	[[gnu::always_inline]]
+	ray(const point3 &o, const vector3 &d, bool should_normalize = true) : origin(o), dir(should_normalize ? normalize(d) : d) {}
+
 	point3 pointAt(world_distance dist) const {
 		return dir * dist + origin;
 	}
-	
+
 	ray rayAt(world_distance dist) const {
 		return ray(pointAt(dist), dir, false);
 	}
@@ -190,4 +158,3 @@ static inline ray ray_from_to(const point3 &origin, const point3 &destination)
 	vector3 from_to = destination - origin;
 	return ray(origin, from_to);
 }
-#endif

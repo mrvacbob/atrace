@@ -1,5 +1,5 @@
 CXX      = clang++
-CXXFLAGS = -std=c++11 -march=native -O3 \
+CXXFLAGS = -std=c++14 -march=native -O3 \
            $(shell pkg-config --cflags libpng)
 LDFLAGS  = $(shell pkg-config --libs libpng) -lz
 
@@ -15,13 +15,9 @@ atrace: $(OBJS)
 clean:
 	rm -f atrace $(OBJS) scene.bmp
 
-# FP exception trap builds (no -ffast-math so traps fire correctly)
+# FP exception trap build (no -ffast-math so traps fire correctly)
 debug:
 	$(MAKE) clean
-	$(MAKE) CXXFLAGS="-std=c++11 -march=native -O0 -g -DDEBUG_FP $(shell pkg-config --cflags libpng)"
+	$(MAKE) CXXFLAGS="-std=c++14 -march=native -O0 -g -DDEBUG_FP $(shell pkg-config --cflags libpng)"
 
-scalar-debug:
-	$(MAKE) clean
-	$(MAKE) CXXFLAGS="-std=c++11 -O0 -g -DDEBUG_FP -DHIGHPRECISION $(shell pkg-config --cflags libpng)"
-
-.PHONY: clean debug scalar-debug
+.PHONY: clean debug

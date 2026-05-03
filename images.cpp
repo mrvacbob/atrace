@@ -15,6 +15,7 @@
  */
 
 #include "raytrace.h"
+#include <cstdio>
 
 struct bmph1 {
 	uint8_t hh, hl;
@@ -32,49 +33,46 @@ struct bmph2 {
 
 void image::finish()
 {
-	f_pixel minp(0.), maxp(1.);
-	
-	for (size_t y=0; y < h; y++) {
-		for (size_t x=0; x < w; x++) {
+	f_pixel minp(0.f), maxp(1.f);
+
+	for (size_t y = 0; y < h; y++)
+		for (size_t x = 0; x < w; x++) {
 			minp.set_min(buf[y*w+x]);
 			maxp.set_max(buf[y*w+x]);
 		}
-	}
-	
-	minv = dmin(dmin(minp.r,minp.g),minp.b);
-	maxv = dmax(dmax(maxp.r,maxp.g),maxp.b);
-	
-	//printf("minv %f maxv %f\n",minv,maxv);
+
+	minv = dmin(dmin(minp.r, minp.g), minp.b);
+	maxv = dmax(dmax(maxp.r, maxp.g), maxp.b);
 }
 
-void image::write_to_bmp(const char *path)
+void image::write_to_bmp(const char *path) const
 {
-	bmph1 h1;
-	bmph2 h2;
-	unsigned char *argb = new unsigned char[w * h * 4];
-	unsigned char *px = argb;
-	f_pixel error(0.);
-	
 	FILE *img = fopen(path, "wb");
-	
-	for (size_t y=0; y < h; y++) {
-		for (size_t x=0; x < w; x++)
-		{
+	if (!img) {
+		fprintf(stderr, "Couldn't open %s for writing.\n", path);
+		return;
+	}
+
+	auto argb = std::make_unique<unsigned char[]>(w * h * 4);
+	unsigned char *px = argb.get();
+	f_pixel error(0.f);
+
+	for (size_t y = 0; y < h; y++)
+		for (size_t x = 0; x < w; x++) {
 			pixel8 src = autolevel(buf[(h-y-1)*w + x]).dither(error);
-			
 			*px++ = src.b;
 			*px++ = src.g;
 			*px++ = src.r;
 			*px++ = 255;
 		}
-	}
-	
-	h1 = (bmph1){0x42,0x4D,(uint32_t)(w*h*4+12+40),0,0,12+40+2};
-	h2 = (bmph2){40,(uint32_t)w,(uint32_t)h,1,32,0,(uint32_t)(w*h*4),72,72,0,0};
-	
-	fwrite(&h1,sizeof(h1),1,img);
-	fwrite(&h2,sizeof(h2),1,img);
-	fwrite(argb,4,w*h,img);
+
+	uint32_t npx = static_cast<uint32_t>(w * h * 4);
+	uint32_t hdrsz = static_cast<uint32_t>(sizeof(bmph1) + sizeof(bmph2));
+	bmph1 h1 = {0x42, 0x4D, npx + hdrsz, 0, 0, hdrsz + 2};
+	bmph2 h2 = {40, static_cast<uint32_t>(w), static_cast<uint32_t>(h), 1, 32, 0, npx, 72, 72, 0, 0};
+
+	fwrite(&h1, sizeof(h1), 1, img);
+	fwrite(&h2, sizeof(h2), 1, img);
+	fwrite(argb.get(), 4, w*h, img);
 	fclose(img);
-	delete[] argb;
 }

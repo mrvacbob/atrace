@@ -16,11 +16,12 @@
 
 #pragma once
 #include "trig.h"
+#include <memory>
 
 struct texture
 {
 	virtual ~texture() {}
-	virtual color4 colorAt(world_distance u, world_distance v) = 0;
+	virtual color4 colorAt(world_distance u, world_distance v) const = 0;
 };
 
 struct flat_texture : public texture
@@ -28,7 +29,7 @@ struct flat_texture : public texture
 	color4 c;
 
 	flat_texture(const color4 &c) : c(to_premultiplied(c)) {}
-	color4 colorAt(world_distance u, world_distance v) {return c;}
+	color4 colorAt(world_distance u, world_distance v) const override {return c;}
 };
 
 struct checkerboard_texture : public texture
@@ -37,7 +38,7 @@ struct checkerboard_texture : public texture
 
 	checkerboard_texture(const color4 &even, const color4 &odd) : even(to_premultiplied(even)), odd(to_premultiplied(odd)) {}
 
-	color4 colorAt(world_distance u, world_distance v);
+	color4 colorAt(world_distance u, world_distance v) const override;
 };
 
 #define IMG_SUPPORT 3
@@ -49,23 +50,24 @@ static inline color4 *pixelAddressAt(color4 *image, ssize_t x, ssize_t y, ssize_
 
 struct image_texture : public texture
 {
-	color4 *image;
+	std::unique_ptr<color4[]> image;
 	ssize_t w, h;
 	world_distance fw, fh;
 	bool repeat;
 
 	image_texture(const char *png_name, bool repeat);
-	virtual ~image_texture() {if (image) delete[] image;}
+	image_texture(const image_texture &) = delete;
+	image_texture &operator=(const image_texture &) = delete;
 
-	color4 pixelAt(ssize_t x, ssize_t y);
-	color4 colorAt(world_distance u, world_distance v);
+	color4 pixelAt(ssize_t x, ssize_t y) const;
+	color4 colorAt(world_distance u, world_distance v) const override;
 };
 
 struct texture_placement
 {
-	texture *tex;
+	std::unique_ptr<texture> tex;
 	world_distance uScale, vScale;
 	world_distance uShift, vShift;
 
-	texture_placement() : tex(NULL), uScale(1), vScale(1), uShift(0), vShift(0) {}
+	texture_placement() : uScale(1), vScale(1), uShift(0), vShift(0) {}
 };
