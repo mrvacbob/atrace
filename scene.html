@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>atrace — WebGL preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; }
+  #info {
+    position: absolute; top: 12px; left: 12px;
+    color: #888; font: 11px/1.6 monospace;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="info">drag · orbit &nbsp; scroll · zoom &nbsp; right-drag · pan</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three":         "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+// ── renderer ──────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(devicePixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.85;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+// atrace background: linear (0.28,0.30,0.35) → sRGB ≈ #8e929d
+// Reference appears closer to #6d7280 — bias darker/cooler.
+scene.background = new THREE.Color(0x6d7280);
+
+// Environment map for reflections/glass (no fog — atrace has none).
+// Keep environment lighting low so floor/wall darken with distance like the
+// reference; the env map is mainly there for glass/metal reflections.
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.02).texture;
+scene.environmentIntensity = 0.25;
+pmrem.dispose();
+
+// ── camera ────────────────────────────────────────────────────────────────
+// atrace: origin (0,0,−5), screen 8×6 at z=0
+// vertical FOV = 2·atan(screen.h/2 / dist) = 2·atan(3/5) ≈ 61.9°
+const camera = new THREE.PerspectiveCamera(61.9, innerWidth / innerHeight, 0.1, 500);
+camera.position.set(0, 0, -5);
+camera.lookAt(0, 0, 0);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0, 5);   // orbit around scene centre
+controls.update();
+
+// ── light ─────────────────────────────────────────────────────────────────
+// atrace light: point at (0,10,−1), color (5,5,5). Three.js intensity is in
+// candela; tune empirically so the scene looks roughly the same.
+const ptLight = new THREE.PointLight(0xffffff, 180, 0, 2);
+ptLight.position.set(0, 10, -1);
+ptLight.castShadow = true;
+ptLight.shadow.mapSize.setScalar(2048);
+ptLight.shadow.bias = -0.0005;
+ptLight.shadow.radius = 1.5;
+scene.add(ptLight);
+
+// visible emitter sphere
+const emitterMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(0.2, 16, 8),
+  new THREE.MeshStandardMaterial({ emissive: 0xffffff, emissiveIntensity: 8 })
+);
+emitterMesh.position.copy(ptLight.position);
+scene.add(emitterMesh);
+
+// ── checkerboard texture (0.5 world-unit tiles) ───────────────────────────
+// 2×2 canvas = one checker period (two tiles each side).
+// On a 200-unit PlaneGeometry with repeat(200,200) → 400 tiles → 0.5 unit/tile.
+function makeChecker(light, dark) {
+  const c = Object.assign(document.createElement('canvas'), { width: 2, height: 2 });
+  const x = c.getContext('2d');
+  x.fillStyle = light; x.fillRect(0, 0, 1, 1); x.fillRect(1, 1, 1, 1);
+  x.fillStyle = dark;  x.fillRect(1, 0, 1, 1); x.fillRect(0, 1, 1, 1);
+  const t = new THREE.CanvasTexture(c);
+  t.magFilter = t.minFilter = THREE.NearestFilter;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+// Reference floor reads darker than 0.9/0.05 — bias both tones down for contrast.
+const floorTex = makeChecker('#b0b0b0', '#070707');
+floorTex.repeat.set(200, 200);
+
+// ── floor: horizontal plane at y=−2 ───────────────────────────────────────
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(200, 200),
+  new THREE.MeshStandardMaterial({ map: floorTex, roughness: 1, metalness: 0 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// ── back wall: vertical plane at z=15, facing −z ─────────────────────────
+// atrace wall: uScale=vScale=50, uShift=vShift=600 in pixel space.
+// Image repeats every W/50 world units. Load caro.png; fall back to the
+// red/blue checker if it can't be fetched.
+// Darken/desaturate the wall via a colour multiplier; reference wall reads
+// noticeably less luminous than raw caro.png pixels.
+const wallMat = new THREE.MeshStandardMaterial({
+  map: makeChecker('#ff1a1a', '#1a26ff'),  // fallback
+  color: new THREE.Color(0x9aa0aa),
+  roughness: 0.85,
+  side: THREE.DoubleSide,
+});
+new THREE.TextureLoader().load('caro.png', tex => {
+  tex.colorSpace = THREE.SRGBColorSpace;  // caro.png is sRGB-encoded
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  // Reference shows ~5 image repeats across the visible width (~24 world units
+  // wide at z=15 with the 61.9° camera). On the full 60-unit wall, that means
+  // ~12 repeats horizontally (every ~5 world units = 1 image).
+  const wallW = 60, wallH = 30;
+  const tilesX = 12;
+  const tilesY = tilesX * (wallH / wallW) *
+                 ((tex.image.width || 1) / (tex.image.height || 1));
+  tex.repeat.set(tilesX, tilesY);
+  wallMat.map = tex;
+  wallMat.needsUpdate = true;
+});
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), wallMat);
+wall.position.set(0, 3, 15);
+wall.rotation.y = Math.PI;
+wall.receiveShadow = true;
+scene.add(wall);
+
+// ── helper: add a sphere to the scene ────────────────────────────────────
+function sphere(x, y, z, r, mat) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(r, 64, 32), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  scene.add(m);
+}
+
+// Three.js with camera looking in +Z has its right vector pointing in −X,
+// mirroring the scene relative to the raytracer. Swap sphere x positions to compensate.
+
+// left sphere (atrace x=−2.4, appears right in WebGL): inky blue gas bubble.
+// atrace: surface color (0.05,0.07,0.20) linear → sRGB ≈ #3e4876, reflect=0.005,
+// transmittance=0.8, Beer-Lambert absorption=(0.167,0.275,0.684), emission≈blue.
+// Use very low roughness with high transmission and a high attenuation distance
+// so the sphere reads as a translucent inky blob rather than a polished bubble.
+sphere(2.4, 1.8, 3, 2, new THREE.MeshPhysicalMaterial({
+  color:            0xffffff,       // white base — let attenuation do the blue tinting
+  roughness:        0,
+  metalness:        0,
+  transmission:     0.85,
+  ior:              1.0,
+  thickness:        4.0,
+  attenuationColor: new THREE.Color(0.08, 0.14, 0.55),  // deep blue; red/green absorbed
+  attenuationDistance: 0.8,                              // dense ink — absorbs quickly
+  emissive:         new THREE.Color(0, 0.003, 0.04),     // faint blue inner glow
+  emissiveIntensity: 1.0,
+  envMapIntensity:  0.08,
+}));
+
+// right sphere (atrace x=+2.4, appears left in WebGL): clear glass, ior 1.5
+sphere(-2.4, 1.8, 3, 2, new THREE.MeshPhysicalMaterial({
+  color:        0xffffff,
+  roughness:    0,
+  metalness:    0,
+  transmission: 1.0,
+  ior:          1.5,
+  thickness:    4.0,
+}));
+
+// rear sphere (z=7): gold — highly reflective, warm gold color
+sphere(0, -0.2, 7, 2, new THREE.MeshPhysicalMaterial({
+  color:     0xd9a626,
+  roughness: 0.05,
+  metalness: 1.0,
+}));
+
+// ── resize ────────────────────────────────────────────────────────────────
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ── render loop ───────────────────────────────────────────────────────────
+renderer.setAnimationLoop(() => {
+  controls.update();
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>
