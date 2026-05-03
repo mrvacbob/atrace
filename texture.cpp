@@ -139,29 +139,34 @@ color4 image_texture::pixelAt(ssize_t x, ssize_t y) const
 	return *pixelAddressAt(image.get(), x, y, w);
 }
 
-static real gaussian(world_distance x, world_distance s)
+// Blackman-windowed sinc: good sidelobe suppression, correct reconstruction
+// up to Nyquist. Negative lobes are intentional — they add sharpness.
+static real blackman_sinc(world_distance x, int support)
 {
-	return expf(s ? -(x*x) / (2*s*s) : 0); // scale factor isn't correct but it has to be rescaled anyway
+	if (fabsf(x) >= (world_distance)support) return 0.f;
+	if (fabsf(x) < 1e-5f) return 1.f;
+	world_distance pix = PI * x;
+	world_distance w = 0.42f + 0.5f * cosf(pix / support) + 0.08f * cosf(2.f * pix / support);
+	return (sinf(pix) / pix) * w;
 }
 
 static void make_filter(real *filter, int support, world_distance pos)
 {
-	world_distance p = ((1.f - pos) - .5f) - support;
-	real sum = 0, rescale;
-
-	if (verbose_log) printf("filter: p %f\n", p);
+	// p = distance from reconstruction point to center of each tap (in texels)
+	// taps are at integer positions; pixel centers sit at i+0.5
+	world_distance p = (0.5f - pos) - support;
+	real sum = 0;
 
 	for (int i = -support; i <= support; i++) {
-		real v = dmax(gaussian(p, 1.f / sqrtf(2.f)), 0.f);
+		real v = blackman_sinc(p, support);
 		sum += v;
 		filter[i + support] = v;
 		p += 1.f;
 	}
 
-	rescale = sum ? (1.f / sum) : 1.f;
-
+	real rescale = sum ? (1.f / sum) : 1.f;
 	for (int i = -support; i <= support; i++)
-	{filter[i + support] *= rescale; if (verbose_log) printf("filter: %d %f -> %f\n", i, p, filter[i+support]);}
+		filter[i + support] *= rescale;
 }
 
 static inline color4 apply_filter_refine(const image_texture *tex, ssize_t x, ssize_t y, real *filter_x, real *filter_y, int support, bool first = true, color4 previous = color4())
