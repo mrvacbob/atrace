@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -march=native -O3 \
            $(shell pkg-config --cflags libpng)
 LDFLAGS  = $(shell pkg-config --libs libpng) -lz
 
-SRCS = trig.cpp scene.cpp images.cpp raytrace.cpp tests.cpp main.cpp
+SRCS = trig.cpp texture.cpp scene.cpp images.cpp raytrace.cpp tests.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 atrace: $(OBJS)
