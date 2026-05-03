@@ -1,4 +1,9 @@
 atrace
-scene.bmp
+*.o
+*.bmp
+*.png
+!reference.png
+*.hdr
 compile_commands.json
 .DS_Store
+.cache/
