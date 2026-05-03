@@ -40,10 +40,11 @@ intersectResult sphere::intersects(const ray &r, world_distance *dist, world_dis
 				}
 			}
 		}
-	} else { //inside sphere		
+	} else { //inside sphere
 		if (dist_from_rad_sq > -EPSILON && consider_close_miss) return MISS;
-		
+
 		world_distance half_cord = closest_approach*closest_approach - dist_from_rad_sq;
+		if (half_cord < 0) return MISS; // numerical edge: origin is on the surface within epsilon
 		r_dist = closest_approach + sqrt(half_cord);
 		
 		if (above(r_dist, 0) && r_dist < max) {
@@ -210,6 +211,7 @@ static color4 colorOfTextureStackAt(texture_placement *textures, world_distance 
 }
 
 color4 surface::colorAt(world_distance u, world_distance v)
-{	
+{
+	if (texcount == 0) return color4(.5, .5, .5, 1.);
 	return colorOfTextureStackAt(textures, u, v, texcount);
 }

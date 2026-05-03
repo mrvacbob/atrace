@@ -46,7 +46,7 @@ struct raytracer
 	scene sc;
 	color background;
     
-	raytracer(primitive **pr, size_t primcount) : sc(this,pr,primcount) {}
+	raytracer(primitive **pr, size_t primcount) : sc(this,pr,primcount), background(0.) {}
 	
 	bool light_reaches(primitive *l, primitive *pi, point3 &to, color *c, vector3 *L, media *medium, unsigned index);
 	color color_of_primitive_at(const ray &r, world_distance dist, primitive *pi, media *medium, unsigned index, intersectResult res, primitive **backtracking=NULL);

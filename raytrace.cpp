@@ -134,24 +134,24 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 	if (verbose_log) printf("%d: R %f T %f\n",index,reflect_weight, refract_weight);
 	
 	if (reflect_weight > 0) {
-		ray reflect_ray(p, r.dir.reflect(N), false);
+		ray reflect_ray(p + N * EPSILON, r.dir.reflect(N), false);
 		if (verbose_log) printf("%d: reflection\n", index);
 		reflected = trace(reflect_ray, NULL, medium, NULL, NULL, index, backtracking);
 		if (!pi->mat.clear_reflect) reflected *= local_color;
 	}
-	
+
 	if (refract_weight > 0) {
 		if (verbose_log) printf("%d: transparency\n", index);
 		world_distance nRatio = exiting_medium->refractive_index / entering_medium->refractive_index;
 		world_distance cosT1 = r.dir.dot(N);
 		world_distance cosT2sq = 1. - (nRatio*nRatio)*(1. - cosT1*cosT1);
-		
+
 		absorbance_factor = 1;
 
 		if (cosT2sq >= 0) {
 			world_distance cosT2 = sqrt(cosT2sq), traced_dist;
 			vector3 refract_dir = (r.dir * nRatio) - N*(cosT2 + nRatio*cosT1);
-			ray refract_ray(p, refract_dir, false);
+			ray refract_ray(p - N * EPSILON, refract_dir, false);
 						
 			refracted = trace(refract_ray, &traced_dist, entering_medium, NULL, NULL, index, backtracking);
 			
@@ -234,40 +234,13 @@ image *raytracer::render(size_t w, size_t h, const camera &cam)
 	world_distance dy = -(cam.screen.h/dh), dx = cam.screen.w/dw;
 	point3 screen_ul = cam.screen.origin + point3(-(cam.screen.w/2.),cam.screen.h/2.,0);
 	
-	#pragma omp parallel for
 	for (size_t y=0; y < h; y++) {
 		for (size_t x=0; x < w; x++) {
-			//if ((x == 841 && y == 313)) verbose_log=true;
-			world_distance dist = 0,mdist=0;
-			world_distance gauss_side = exp(-.5 * (.5*.5 + .5*.5)), gauss_mid = exp(0.);
-			color mc;
-
-			// 2x2 supersampling AA: traces 4 corner sub-pixels + 1 center sample below, Gaussian-weighted.
-			// TODO: overkill for a basic raytracer; consider removing in favour of center-only trace.
-			for (int ay=0; ay < 2; ay++) {
-				for (int ax=0; ax < 2; ax++) {
-					world_distance adist;
-					point3 eye = screen_ul + point3(dx * (x+ax), dy * (y+ay), 0);
-					ray r = ray_from_to(cam.origin,eye);
-					color ac = trace(r, &adist, &sc.atmosphere);
-					mc += ac*gauss_side;
-					mdist += adist*gauss_side;
-				}
-			}
-			
-			point3 eye = screen_ul + point3(dx * (x+.5), dy * (y+.5),0);
-			ray r = ray_from_to(cam.origin,eye);
+			world_distance dist;
+			point3 eye = screen_ul + point3(dx * (x+.5), dy * (y+.5), 0);
+			ray r = ray_from_to(cam.origin, eye);
 			color c = trace(r, &dist, &sc.atmosphere);
-
-			c += mc;
-			dist += mdist;
-			
-			c /= gauss_mid + (gauss_side*6.);
-			dist /= gauss_mid + (gauss_side*6.);
-			
-			f_pixel outc(c.r,c.g,c.b); 
-			target->set(x,y, outc, dist);
-            //verbose_log=false;
+			target->set(x, y, f_pixel(c.r, c.g, c.b), dist);
 		}
 	}
 	

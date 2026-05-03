@@ -27,7 +27,9 @@
 #endif
 #define TWOPI 6.28318530717958647692
 
+#ifndef HIGHPRECISION
 #define LOWPRECISION
+#endif
 
 #ifdef LOWPRECISION
 
@@ -155,10 +157,11 @@ static inline color4 to_premultiplied(color4 cs) {return to_premultiplied(c4to3(
 static inline color from_premultiplied(color4 c, real *a = NULL)
 {
 	real resa = c.a;
-	
+
 	if (a) *a = resa;
-	
-	return c4to3(c * resa);
+	if (resa == 0) return color(0.);
+
+	return c4to3(c / resa);
 }
 
 static inline color strip_alpha(color4 c)

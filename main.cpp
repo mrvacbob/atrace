@@ -16,6 +16,21 @@
 
 #include "raytrace.h"
 #include "tests.h"
+#ifdef DEBUG_FP
+#include <fenv.h>
+static void enable_fp_exceptions()
+{
+    fenv_t fenv;
+    fegetenv(&fenv);
+#if defined(__x86_64__)
+    fenv.__control &= ~(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+    fenv.__mxcsr   &= ~((FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW) << 7);
+#elif defined(__aarch64__)
+    fenv.__fpcr    |= (1 << 8) | (1 << 9) | (1 << 10); // IOE | DZE | OFE
+#endif
+    fesetenv(&fenv);
+}
+#endif
 
 #if 0
 static primitive **lots_of_spheres(int *pi)
@@ -130,6 +145,9 @@ static primitive **checkerboard_scene(int *pi)
 }
 
 int main (int argc, char * const argv[]) {
+#ifdef DEBUG_FP
+	enable_fp_exceptions();
+#endif
 	size_t w = 1280, h = 960;
 	camera cam;
 	int primi;
