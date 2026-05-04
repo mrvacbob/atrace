@@ -45,7 +45,7 @@ struct raytracer
 	scene sc;
 	color background;
 
-	raytracer(primitive **pr, size_t primcount) : sc(this,pr,primcount), background(0.f) {}
+	raytracer() : sc(this), background(0.f) {}
 
 	bool light_reaches(primitive *light, primitive *pi, const point3 &to, color *c, vector3 *L, const media *medium, unsigned index) const;
 	color color_of_primitive_at(const ray &r, world_distance dist, primitive *pi, const media *medium, unsigned index, intersectResult res, primitive **backtracking=nullptr) const;
@@ -55,5 +55,3 @@ struct raytracer
 	std::unique_ptr<image> render(size_t w, size_t h, const camera &cam) const;
 };
 
-#define FOR_EACH_LIGHT() for (size_t i = 0; i < sc.primcount; i++) {primitive *light = sc.prims[i]; if (light->light) {
-#define FOR_EACH_LIGHT_END() }}

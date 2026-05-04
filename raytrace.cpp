@@ -108,8 +108,7 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 	if (!backtracking) {
 		if (verbose_log) printf("%d: lighting\n", index);
 
-		FOR_EACH_LIGHT();
-		{
+		for (primitive *light : sc.lights) {
 			vector3 L;
 			color light_color;
 			bool light_reached = light_reaches(light, pi, p, &light_color, &L, medium, index);
@@ -128,7 +127,6 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 				if (pi->mat.dielectric) dielectric_specular += specularc;
 			}
 		}
-		FOR_EACH_LIGHT_END();
 	}
 
 	if (pi->mat.dielectric) {
@@ -210,9 +208,7 @@ primitive *raytracer::find_primitive_along(const ray &r, world_distance *col_dis
 			   r.dir.x, r.dir.y, r.dir.z, max_dist, closest);
 	}
 
-	for (size_t i = 0; i < sc.primcount; i++) {
-		primitive *p = sc.prims[i];
-
+	for (primitive *p : sc.prims) {
 		if (p == ignore) {
 			if (verbose_log) printf("\tignoring %s %p at (%f,%f,%f)\n", p->type(), p, p->origin.x, p->origin.y, p->origin.z);
 			continue;

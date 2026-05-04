@@ -16,6 +16,7 @@
 
 #pragma once
 #include "texture.h"
+#include <vector>
 
 struct media
 {
@@ -119,10 +120,20 @@ struct raytracer;
 
 struct scene
 {
-	primitive **prims;
-	size_t primcount;
+	std::vector<std::unique_ptr<primitive>> owned;
+	std::vector<primitive *> prims;
+	std::vector<primitive *> lights;
 	media atmosphere;
 	raytracer *parent;
 
-	scene(raytracer *rt, primitive **pr, size_t primcount) : prims(pr), primcount(primcount), parent(rt) {atmosphere.transmittance = 1;}
+	explicit scene(raytracer *rt) : parent(rt) { atmosphere.transmittance = 1; }
+	scene(const scene &) = delete;
+	scene &operator=(const scene &) = delete;
+
+	void add(std::unique_ptr<primitive> p) {
+		primitive *raw = p.get();
+		if (raw->light) lights.push_back(raw);
+		prims.push_back(raw);
+		owned.push_back(std::move(p));
+	}
 };

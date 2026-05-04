@@ -1,5 +1,5 @@
 CXX      = clang++
-CXXFLAGS = -std=c++14 -march=native -O3 -MMD -MP \
+CXXFLAGS = -std=c++17 -march=native -O3 -MMD -MP \
            $(shell pkg-config --cflags libpng)
 LDFLAGS  = $(shell pkg-config --libs libpng) -lz
 
@@ -30,7 +30,7 @@ check: atrace
 # FP exception trap build (no -ffast-math so traps fire correctly)
 debug:
 	$(MAKE) clean
-	$(MAKE) CXXFLAGS="-std=c++14 -march=native -O0 -g -DDEBUG_FP $(shell pkg-config --cflags libpng)"
+	$(MAKE) CXXFLAGS="-std=c++17 -march=native -O0 -g -DDEBUG_FP $(shell pkg-config --cflags libpng)"
 
 # POV-Ray render (output: scene_pov.png / scene_pov.exr for HDR inspection)
 pov:
