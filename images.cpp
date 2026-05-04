@@ -129,9 +129,9 @@ void image::write_to_hdr(const char *path) const
 			} else {
 				int e;
 				float scale = frexpf(maxc, &e) * 256.f / maxc;
-				px[0] = (uint8_t)(p.r * scale);
-				px[1] = (uint8_t)(p.g * scale);
-				px[2] = (uint8_t)(p.b * scale);
+				px[0] = (uint8_t)dmax(0.f, p.r * scale);
+				px[1] = (uint8_t)dmax(0.f, p.g * scale);
+				px[2] = (uint8_t)dmax(0.f, p.b * scale);
 				px[3] = (uint8_t)(e + 128);
 			}
 		}

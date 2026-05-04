@@ -220,6 +220,8 @@ color4 image_texture::colorAt(world_distance u, world_distance v) const
 	}
 
 	u = fw-u;
+	u = dmax(0.f, dmin(fw, u));
+	v = dmax(0.f, dmin(fh, v));
 
 	world_distance uf = floorf(u), vf = floorf(v);
 	world_distance ud = u - uf, vd = v - vf;

@@ -2,9 +2,16 @@ CXX      = clang++
 OMP_FLAGS = -Xpreprocessor -fopenmp -I/opt/local/include/libomp
 OMP_LIBS  = -L/opt/local/lib/libomp -lomp
 CXXFLAGS = -std=c++17 -march=native -O3 -MMD -MP \
+           -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG \
            $(OMP_FLAGS) \
            $(shell pkg-config --cflags libpng)
 LDFLAGS  = $(shell pkg-config --libs libpng) -lz $(OMP_LIBS)
+
+DEBUG_CXXFLAGS = -std=c++17 -march=native -Og -g -DDEBUG_FP \
+                 -fno-omit-frame-pointer -fsanitize=address,undefined \
+                 $(OMP_FLAGS) \
+                 $(shell pkg-config --cflags libpng)
+DEBUG_LDFLAGS  = $(shell pkg-config --libs libpng) -lz $(OMP_LIBS) -fsanitize=address,undefined
 
 SRCS = trig.cpp texture.cpp scene.cpp images.cpp raytrace.cpp tests.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
@@ -33,7 +40,7 @@ check: atrace
 # FP exception trap build (no -ffast-math so traps fire correctly)
 debug:
 	$(MAKE) clean
-	$(MAKE) CXXFLAGS="-std=c++17 -march=native -O0 -g -DDEBUG_FP $(shell pkg-config --cflags libpng)"
+	$(MAKE) CXXFLAGS="$(DEBUG_CXXFLAGS)" LDFLAGS="$(DEBUG_LDFLAGS)"
 
 # POV-Ray render (output: scene_pov.png / scene_pov.exr for HDR inspection)
 pov:
