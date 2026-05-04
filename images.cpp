@@ -34,7 +34,7 @@ struct bmph2 {
 // ACES filmic tone mapping approximation (Stephen Hill / Narkowicz fit).
 // Maps linear [0,∞) → display linear [0,1] with a pleasing highlight rolloff.
 // Output is linear — the sRGB OETF is applied separately in dither().
-static f_real aces_f(f_real x)
+static real aces_f(real x)
 {
 	return dmin(dmax((x*(2.51f*x+0.03f)) / (x*(2.43f*x+0.59f)+0.14f), 0.f), 1.f);
 }
@@ -45,17 +45,17 @@ void image::finish()
 	// Exclude very dark pixels (shadows, black texels) from the average —
 	// including them with a small delta drags the geometric mean down and
 	// causes over-exposure. Use double accumulation to reduce FP error.
-	const f_real lum_floor = 0.01f;
+	const real lum_floor = 0.01f;
 	double logsum = 0;
 	size_t count  = 0;
 	for (size_t i = 0; i < w * h; i++) {
-		f_real L = 0.2126f*buf[i].r + 0.7152f*buf[i].g + 0.0722f*buf[i].b;
+		real L = 0.2126f*buf[i].r + 0.7152f*buf[i].g + 0.0722f*buf[i].b;
 		if (L > lum_floor) {
 			logsum += (double)logf(L);
 			count++;
 		}
 	}
-	f_real log_avg = count ? expf((f_real)(logsum / (double)count)) : 1.f;
+	real log_avg = count ? expf((real)(logsum / (double)count)) : 1.f;
 	exposure = 0.18f / log_avg;
 	fprintf(stderr, "atrace: log_avg_lum=%.4f exposure_scale=%.4f\n", log_avg, exposure);
 }
@@ -79,7 +79,7 @@ void image::write_to_bmp(const char *path) const
 			// the same scale to R, G, B. Per-channel ACES shifts hue for saturated
 			// colors (e.g. gold highlights go white). Max channel ensures no channel
 			// exceeds aces_f(max) ≤ 1, preventing hard post-tone-map clipping too.
-			f_real m = dmax(p.r, dmax(p.g, p.b));
+			real m = dmax(p.r, dmax(p.g, p.b));
 			f_pixel mapped = p * (m > 1e-6f ? aces_f(m) / m : 0.f);
 			pixel8 src = mapped.dither(error);
 			*px++ = src.b;

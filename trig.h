@@ -27,16 +27,18 @@
 #define TWOPI 6.28318530717958647692
 
 #ifdef __SSSE3__
-#define SSEVEC
+#define IS_SIMD
 #include <pmmintrin.h>
 static inline __m128 sse_1000() {return _mm_castsi128_ps(_mm_set_epi32(-1,0,0,0));}
 static inline __m128 zero_w_sse(__m128 s) {return _mm_andnot_ps(sse_1000(), s);}
+#elif defined(__ARM_NEON__)
+#define IS_SIMD
+#include <arm_neon.h>
 #endif
 
 typedef float world_distance;
 typedef world_distance angle;
 typedef float real;
-typedef float f_real;
 
 static constexpr world_distance EPSILON = 1.f/4096.f;
 
@@ -53,20 +55,20 @@ static inline real colorToL(uint8_t vi)
 	return srgbToL[vi];
 }
 
-static inline uint8_t colorFromL(f_real v)
+static inline uint8_t colorFromL(real v)
 {
-	const f_real a = .055f;
-	f_real v_srgb = (v > .0031308f) ? ((a + 1.f) * powf(v, 1.f/2.4f) - a) : (v * 12.92f);
+	const real a = .055f;
+	real v_srgb = (v > .0031308f) ? ((a + 1.f) * powf(v, 1.f/2.4f) - a) : (v * 12.92f);
 
 	return static_cast<uint8_t>(dmin(dmax(static_cast<int>(lrintf(v_srgb * 255.f)), 0), 255));
 }
 
-static inline uint8_t dithered_fromL(f_real v, f_real *error)
+static inline uint8_t dithered_fromL(real v, real *error)
 {
-	f_real er = *error, v_er = v+er;
+	real er = *error, v_er = v+er;
 
 	uint8_t o = colorFromL(v_er);
-	f_real v2 = colorToL(o);
+	real v2 = colorToL(o);
 
 	*error = v_er-v2;
 	return o;
@@ -90,7 +92,7 @@ typedef vectorX<real, 4> color4;
 typedef color3 color;
 typedef vector3 point3;
 
-typedef vectorX<f_real, 3> f_pixel;
+typedef color f_pixel;
 typedef vectorX<uint8_t, 3> pixel8;
 
 static inline color4 over(color4 above, color4 below)
@@ -100,7 +102,7 @@ static inline color4 over(color4 above, color4 below)
 
 static inline color4 c3to4(color c)
 {
-#ifdef SSEVEC
+#ifdef IS_SIMD
 	color4 res(c.s);
 	res.a=1;
 	return res;
@@ -111,7 +113,7 @@ static inline color4 c3to4(color c)
 
 static inline color c4to3(color4 c)
 {
-#ifdef SSEVEC
+#ifdef IS_SIMD
 	return color(c.s);
 #else
 	return color(c.r,c.g,c.b);

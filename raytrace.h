@@ -21,8 +21,8 @@
 struct image
 {
 	std::unique_ptr<f_pixel[]> buf;
-	std::unique_ptr<f_real[]> depth_buf;
-	f_real exposure;  // set by finish() via log-average luminance
+	std::unique_ptr<real[]> depth_buf;
+	real exposure;  // set by finish() via log-average luminance
 	size_t w, h;
 
 	image(size_t w, size_t h);
@@ -32,7 +32,7 @@ struct image
 	void write_to_bmp(const char *path) const;
 	void write_to_hdr(const char *path) const;
 
-	inline void set(size_t x, size_t y, const f_pixel p, f_real depth) {
+	inline void set(size_t x, size_t y, const f_pixel p, real depth) {
 		buf[y*w + x] = p;
 		depth_buf[y*w + x] = depth;
 	}

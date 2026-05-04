@@ -24,7 +24,7 @@ image::image(size_t w_, size_t h_)
 	w = w_;
 	h = h_;
 	buf       = std::make_unique<f_pixel[]>(w*h);
-	depth_buf = std::make_unique<f_real[]>(w*h);
+	depth_buf = std::make_unique<real[]>(w*h);
 }
 
 static real fresnelR(const ray &r, const vector3 &N, real n1, real n2)
