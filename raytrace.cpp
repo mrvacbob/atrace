@@ -271,6 +271,7 @@ std::unique_ptr<image> raytracer::render(size_t w, size_t h, const camera &cam) 
 
 	static const world_distance offsets[2] = {0.25f, 0.75f};
 
+#pragma omp parallel for schedule(dynamic, 4)
 	for (size_t y = 0; y < h; y++) {
 		for (size_t x = 0; x < w; x++) {
 			world_distance dist_ctr;

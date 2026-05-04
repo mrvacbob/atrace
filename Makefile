@@ -1,7 +1,10 @@
 CXX      = clang++
+OMP_FLAGS = -Xpreprocessor -fopenmp -I/opt/local/include/libomp
+OMP_LIBS  = -L/opt/local/lib/libomp -lomp
 CXXFLAGS = -std=c++17 -march=native -O3 -MMD -MP \
+           $(OMP_FLAGS) \
            $(shell pkg-config --cflags libpng)
-LDFLAGS  = $(shell pkg-config --libs libpng) -lz
+LDFLAGS  = $(shell pkg-config --libs libpng) -lz $(OMP_LIBS)
 
 SRCS = trig.cpp texture.cpp scene.cpp images.cpp raytrace.cpp tests.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
