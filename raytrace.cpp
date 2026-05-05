@@ -18,19 +18,31 @@
 #include <cstdio>
 #include <thread>
 
-// Perturb N by a uniform random vector scaled by roughness, staying on the same
-// hemisphere.  thread_local RNG is safe under OpenMP (each thread has its own).
-static vector3 perturb_normal(const vector3 &N, real roughness) {
+// Sample a microfacet normal from the GGX (Trowbridge-Reitz) NDF.
+// Returns a half-vector in world space; caller should verify the reflected
+// direction stays above the surface (dot(reflect(rd,H), N) > 0).
+static vector3 sample_ggx_normal(const vector3 &N, real alpha) {
     thread_local uint32_t s = uint32_t(std::hash<std::thread::id>{}(
                                   std::this_thread::get_id())) | 1u;
-    auto rng = [&] {  // xorshift32 → float in (-1, 1)
+    auto rng01 = [&] {  // xorshift32 → float in [0, 1)
         s ^= s << 13; s ^= s >> 17; s ^= s << 5;
-        return int32_t(s >> 8) * (1.f / (1u << 23));
+        return (s >> 8) * (1.f / (1u << 24));
     };
-    vector3 v;
-    do { v = vector3(rng(), rng(), rng()); } while (v.dot_self() > 1.f);
-    vector3 Np = normalize(N + v * roughness);
-    return dot(Np, N) > 0 ? Np : N;
+
+    // Importance-sample GGX NDF: cos_theta from CDF inverse
+    real xi1 = rng01(), xi2 = rng01();
+    real a2 = alpha * alpha;
+    real cos_theta = sqrtf((1.f - xi1) / (1.f + (a2 - 1.f) * xi1));
+    real sin_theta = sqrtf(1.f - cos_theta * cos_theta);
+    real phi = 2.f * PI * xi2;
+
+    // Half-vector in local tangent frame, then rotate to world space
+    vector3 ref = fabsf(N.x) < .9f ? vector3(1,0,0) : vector3(0,1,0);
+    vector3 T = normalize(cross(ref, N));
+    vector3 B = cross(N, T);
+    return normalize(T * (sin_theta * cosf(phi)) +
+                     B * (sin_theta * sinf(phi)) +
+                     N *  cos_theta);
 }
 
 static constexpr bool verbose_log = false;
@@ -156,7 +168,11 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 	if (verbose_log) printf("%d: R %f T %f\n", index, reflect_weight, refract_weight);
 
 	if (reflect_weight > 0) {
-		vector3 Nr = pi->mat.roughness > 0 ? perturb_normal(N, pi->mat.roughness) : N;
+		vector3 Nr = N;
+		if (pi->mat.roughness > 0) {
+			vector3 H = sample_ggx_normal(N, pi->mat.roughness);
+			if (dot(r.dir.reflect(H), N) > 0) Nr = H;
+		}
 		ray reflect_ray(p + Nr * EPSILON, r.dir.reflect(Nr), false);
 		if (verbose_log) printf("%d: reflection\n", index);
 		reflected = trace(reflect_ray, nullptr, medium, nullptr, nullptr, index, backtracking);
