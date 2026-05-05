@@ -16,6 +16,22 @@
 
 #include "raytrace.h"
 #include <cstdio>
+#include <thread>
+
+// Perturb N by a uniform random vector scaled by roughness, staying on the same
+// hemisphere.  thread_local RNG is safe under OpenMP (each thread has its own).
+static vector3 perturb_normal(const vector3 &N, real roughness) {
+    thread_local uint32_t s = uint32_t(std::hash<std::thread::id>{}(
+                                  std::this_thread::get_id())) | 1u;
+    auto rng = [&] {  // xorshift32 → float in (-1, 1)
+        s ^= s << 13; s ^= s >> 17; s ^= s << 5;
+        return int32_t(s >> 8) * (1.f / (1u << 23));
+    };
+    vector3 v;
+    do { v = vector3(rng(), rng(), rng()); } while (v.dot_self() > 1.f);
+    vector3 Np = normalize(N + v * roughness);
+    return dot(Np, N) > 0 ? Np : N;
+}
 
 static constexpr bool verbose_log = false;
 
@@ -140,7 +156,8 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 	if (verbose_log) printf("%d: R %f T %f\n", index, reflect_weight, refract_weight);
 
 	if (reflect_weight > 0) {
-		ray reflect_ray(p + N * EPSILON, r.dir.reflect(N), false);
+		vector3 Nr = pi->mat.roughness > 0 ? perturb_normal(N, pi->mat.roughness) : N;
+		ray reflect_ray(p + Nr * EPSILON, r.dir.reflect(Nr), false);
 		if (verbose_log) printf("%d: reflection\n", index);
 		reflected = trace(reflect_ray, nullptr, medium, nullptr, nullptr, index, backtracking);
 		if (!pi->mat.clear_reflect) reflected *= local_color;

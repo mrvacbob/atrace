@@ -90,6 +90,7 @@ static void checkerboard_scene(scene &sc)
 	p5->mat.diffuse = .05f;
 	p5->mat.reflect = .9f;
 	p5->mat.clear_reflect = false;  // reflection tinted by gold color
+	p5->mat.roughness = 0.03f;      // 3% roughness — slightly blurred reflections
 	sc.add(std::move(p5));
 }
 

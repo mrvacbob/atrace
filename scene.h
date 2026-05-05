@@ -31,14 +31,14 @@ struct media
 
 struct surface
 {
-	real reflect, diffuse, specular_exp;
+	real reflect, diffuse, specular_exp, roughness;
 	bool clear_reflect;
 	bool dielectric; // dielectrics' reflectivity changes depending on the viewing angle
 
 	texture_placement textures[16];
 	int texcount;
 
-	surface() : reflect(0.f), diffuse(1), specular_exp(40.f), clear_reflect(true), dielectric(false), texcount(0) {}
+	surface() : reflect(0.f), diffuse(1), specular_exp(40.f), roughness(0.f), clear_reflect(true), dielectric(false), texcount(0) {}
 	surface(const surface &) = delete;
 	surface &operator=(const surface &) = delete;
 
