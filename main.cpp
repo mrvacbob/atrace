@@ -80,17 +80,18 @@ static void checkerboard_scene(scene &sc)
 
 	// Light: tiny bright sphere — acts as area light via backtracking caustics hack
 	auto p4 = std::make_unique<sphere>(vector3(0, 10, -1), .2f);
-	set_color(p4.get(), color4(5,5,5));
+	set_color(p4.get(), color4(5.25f, 4.9f, 4.25f));  // subtle warm tint
 	p4->light = true;
 	sc.add(std::move(p4));
 
-	// Rear sphere: gold — highly reflective, tinted reflection, minimal diffuse
+	// Rear sphere: gold — conductor Fresnel with GGX roughness, no diffuse
 	auto p5 = std::make_unique<sphere>(vector3(0, -.2f, 7), 2);
-	set_color(p5.get(), color4(.85f,.65f,.15f));  // gold: warm yellow, slightly orange
-	p5->mat.diffuse = .05f;
-	p5->mat.reflect = .9f;
-	p5->mat.clear_reflect = false;  // reflection tinted by gold color
-	p5->mat.roughness = 0.03f;      // 3% roughness — slightly blurred reflections
+	p5->mat.metallic      = true;
+	p5->mat.roughness     = 0.03f;
+	p5->mat.diffuse       = 0.f;
+	// Gold IOR (RGB ≈ 700/550/450 nm): values from Palik "Handbook of Optical Constants"
+	p5->mat.conductor_n   = color(0.17f, 0.35f, 1.5f);
+	p5->mat.conductor_k   = color(3.1f,  2.7f,  1.9f);
 	sc.add(std::move(p5));
 }
 
@@ -104,7 +105,7 @@ int main(int argc, char * const argv[])
 
 	raytracer tr;
 	checkerboard_scene(tr.sc);
-	tr.background = color(0.28f, 0.30f, 0.35f);  // cool overcast sky grey
+	tr.background = color(0.295f, 0.295f, 0.30f);  // near-neutral, faint cool
 
 	cam.origin = point3(0, 0, -5);
 	cam.screen.origin = point3(0, 0, 0);

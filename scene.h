@@ -34,11 +34,15 @@ struct surface
 	real reflect, diffuse, specular_exp, roughness;
 	bool clear_reflect;
 	bool dielectric; // dielectrics' reflectivity changes depending on the viewing angle
+	bool metallic;   // conductor: reflection colored by per-channel Fresnel, no diffuse
+	color conductor_n, conductor_k; // complex IOR for conductor Fresnel (used when metallic)
 
 	texture_placement textures[16];
 	int texcount;
 
-	surface() : reflect(0.f), diffuse(1), specular_exp(40.f), roughness(0.f), clear_reflect(true), dielectric(false), texcount(0) {}
+	surface() : reflect(0.f), diffuse(1), specular_exp(40.f), roughness(0.f),
+	            clear_reflect(true), dielectric(false), metallic(false),
+	            conductor_n(0.f), conductor_k(0.f), texcount(0) {}
 	surface(const surface &) = delete;
 	surface &operator=(const surface &) = delete;
 

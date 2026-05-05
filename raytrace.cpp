@@ -18,6 +18,16 @@
 #include <cstdio>
 #include <thread>
 
+// Exact conductor Fresnel for one wavelength channel (incident medium n=1).
+// Rs = (n²+k²-2n·cosθ+cos²θ)/(n²+k²+2n·cosθ+cos²θ)
+// Rp = ((n²+k²)cos²θ-2n·cosθ+1)/((n²+k²)cos²θ+2n·cosθ+1)
+static real conductor_fresnel(real cos_theta, real n, real k) {
+    real n2k2 = n*n + k*k, cos2 = cos_theta*cos_theta;
+    real Rs = (n2k2 - 2.f*n*cos_theta + cos2) / (n2k2 + 2.f*n*cos_theta + cos2);
+    real Rp = (n2k2*cos2 - 2.f*n*cos_theta + 1.f) / (n2k2*cos2 + 2.f*n*cos_theta + 1.f);
+    return 0.5f * (Rs + Rp);
+}
+
 // Sample a microfacet normal from the GGX (Trowbridge-Reitz) NDF.
 // Returns a half-vector in world space; caller should verify the reflected
 // direction stays above the surface (dot(reflect(rd,H), N) > 0).
@@ -157,7 +167,9 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 		}
 	}
 
-	if (pi->mat.dielectric) {
+	if (pi->mat.metallic) {
+		reflect_weight = 1.f;
+	} else if (pi->mat.dielectric) {
 		reflect_weight = fresnelR(tray, N, exiting_medium->refractive_index, entering_medium->refractive_index);
 		refract_weight = 1.f - reflect_weight;
 	} else {
@@ -176,7 +188,15 @@ color raytracer::color_of_primitive_at(const ray &r, world_distance dist, primit
 		ray reflect_ray(p + Nr * EPSILON, r.dir.reflect(Nr), false);
 		if (verbose_log) printf("%d: reflection\n", index);
 		reflected = trace(reflect_ray, nullptr, medium, nullptr, nullptr, index, backtracking);
-		if (!pi->mat.clear_reflect) reflected *= local_color;
+		if (pi->mat.metallic) {
+			real cos_theta = fabsf(dot(r.dir, Nr));
+			reflected *= color(
+				conductor_fresnel(cos_theta, pi->mat.conductor_n.r, pi->mat.conductor_k.r),
+				conductor_fresnel(cos_theta, pi->mat.conductor_n.g, pi->mat.conductor_k.g),
+				conductor_fresnel(cos_theta, pi->mat.conductor_n.b, pi->mat.conductor_k.b));
+		} else if (!pi->mat.clear_reflect) {
+			reflected *= local_color;
+		}
 		// Dielectric Phong highlight via reflected channel: the mirror ray rarely hits
 		// the 0.2-radius light sphere, so add the Phong specular lobe here instead.
 		// Gets correctly Fresnel-scaled (~4% at normal incidence, 100% at grazing)
