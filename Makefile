@@ -1,6 +1,14 @@
 CXX      = clang++
+OMP_OK    := $(shell echo '' | $(CXX) -Xpreprocessor -fopenmp \
+               -I/opt/local/include/libomp -x c++ -fsyntax-only - 2>/dev/null \
+               && test -f /opt/local/lib/libomp/libomp.dylib && echo yes)
+ifeq ($(OMP_OK),yes)
 OMP_FLAGS = -Xpreprocessor -fopenmp -I/opt/local/include/libomp
 OMP_LIBS  = -L/opt/local/lib/libomp -lomp
+else
+OMP_FLAGS =
+OMP_LIBS  =
+endif
 CXXFLAGS = -std=c++17 -march=native -O3 -MMD -MP \
            -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG \
            $(OMP_FLAGS) \
